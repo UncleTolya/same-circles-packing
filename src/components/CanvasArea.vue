@@ -90,6 +90,24 @@
             />
           </div>
         </div>
+        <div style="display: flex; flex: 1; flex-direction: column">
+          <div style="display: flex; flex-direction: column">
+            <div style="display: flex; justify-content: space-between">
+              <div>Weight: </div>
+              <InputNumber
+                :min="minW"
+                :max="maxW"
+                size="small"
+                v-model="w"
+              />
+            </div>
+            <Slider
+              :min="minW"
+              :max="maxW"
+              v-model="w"
+            />
+          </div>
+        </div>
       </div>
       <canvas id="canvas" width="600" height="600"></canvas>
     </div>
@@ -102,7 +120,7 @@
 
 import { PolygonArea } from '@/components/Area/PolygonArea';
 import { Drawer } from '@/components/Drawer/Drawer';
-import { getFittedCentres, noop } from '@/components/utils';
+import {getFittedCentresRightLine, getFittedCentresSpiral, noop} from '@/components/utils';
 import { Component } from 'vue-property-decorator';
 import { InputNumber, Slider } from 'ant-design-vue';
 import Vue from 'vue';
@@ -120,7 +138,7 @@ import 'ant-design-vue/dist/antd.css';
 export default class CanvasArea extends Vue {
   private offset = 10;
 
-  private minRadius = 15;
+  private minRadius = 10;
   private maxRadius = 400;
   private radius = this.minRadius;
 
@@ -132,11 +150,15 @@ export default class CanvasArea extends Vue {
 
   private s = 1;
   private minS = 1;
-  private maxS = 450;
+  private maxS = 3000;
 
   private p = 1;
   private minP = 0;
   private maxP = 250;
+
+  private w = 50;
+  private minW = 1;
+  private maxW = 250;
 
   private drawer!: Drawer;
 
@@ -167,7 +189,8 @@ export default class CanvasArea extends Vue {
     drawer.resetCanvas();
     const sum = s * p;
     drawer.draw(polygonArea);
-    const fittedCentres = getFittedCentres(polygonArea, radius, sum);
+    // const fittedCentres = getFittedCentresSpiral(polygonArea, radius, sum);
+    const fittedCentres = getFittedCentresRightLine(polygonArea, radius, sum);
     fittedCentres.forEach(([x, y]) => {
       const circle = { x, y, r: radius };
       const color = fittedCentres.length < sum
