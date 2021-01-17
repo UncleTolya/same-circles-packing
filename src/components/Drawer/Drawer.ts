@@ -1,8 +1,9 @@
 import { Area } from "@/components/Area/Area";
+import {CircleArea} from "@/components/Area/CircleArea";
 import { PolygonArea } from "@/components/Area/PolygonArea";
 
-const CANVAS_WIDTH = 600;
-const CANVAS_HEIGHT = 600;
+export const CANVAS_WIDTH = 600;
+export const CANVAS_HEIGHT = 600;
 
 const BORDER_COLOR = 'red';
 const AREA_COLOR = 'grey';
@@ -69,6 +70,8 @@ export class Drawer {
   ): void {
     if (area instanceof PolygonArea) {
       this.drawPolygon(area.points,options?.color ?? AREA_COLOR);
+    } else if (area instanceof CircleArea) {
+      this.drawCircle({x: area.x, y: area.y, r: area.r },options?.color ?? 'white');
     }
   }
 
