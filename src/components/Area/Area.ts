@@ -67,4 +67,6 @@ export abstract class Area {
       radius + 1,
     );
   }
+
+  public abstract isExists(): boolean;
 }

@@ -1,13 +1,9 @@
-import { Area } from "@/components/Area/Area";
-import {CircleArea} from "@/components/Area/CircleArea";
-import { PolygonArea } from "@/components/Area/PolygonArea";
+import { Area } from '@/components/Area/Area';
+import { CircleArea } from '@/components/Area/CircleArea';
+import { PolygonArea } from '@/components/Area/PolygonArea';
 
 export const CANVAS_WIDTH = 600;
 export const CANVAS_HEIGHT = 600;
-
-const BORDER_COLOR = 'red';
-const AREA_COLOR = 'grey';
-const DRAW_ELEMENT_COLOR = 'green';
 
 export type Coordinate = [number, number];
 
@@ -24,7 +20,8 @@ type DrawElement = Polygon | Circle;
 
 interface DrawOptions {
   index?: number;
-  color?: string;
+  strokeColor?: string;
+  fillColor?: string;
 }
 
 export class Drawer {
@@ -57,10 +54,15 @@ export class Drawer {
     element: DrawElement,
     options?: DrawOptions,
   ): void {
+    const opt = {
+      fillColor: 'green',
+      strokeColor: 'grey',
+      ...options ?? {},
+    };
     if ((element as Polygon).points) {
-      this.drawPolygon((element as Polygon).points, options?.color ?? DRAW_ELEMENT_COLOR);
+      this.drawPolygon((element as Polygon).points, opt);
     } else {
-      this.drawCircle(element as Circle, options?.color ?? DRAW_ELEMENT_COLOR)
+      this.drawCircle(element as Circle, opt);
     }
   }
 
@@ -68,39 +70,44 @@ export class Drawer {
     area: Area,
     options?: DrawOptions,
   ): void {
+    const opt = {
+      strokeColor: 'grey',
+      fillColor: 'white',
+      ...options ?? {},
+    };
     if (area instanceof PolygonArea) {
-      this.drawPolygon(area.points,options?.color ?? AREA_COLOR);
+      this.drawPolygon(area.points, opt);
     } else if (area instanceof CircleArea) {
-      this.drawCircle({x: area.x, y: area.y, r: area.r },options?.color ?? 'white');
+      this.drawCircle({ x: area.x, y: area.y, r: area.r }, opt);
     }
   }
 
   private drawBorders(): void {
     const { ctx } = this;
-    ctx.strokeStyle = BORDER_COLOR;
+    ctx.strokeStyle = 'red';
     ctx.strokeRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   }
 
   private drawCircle(
     { x, y, r }: Circle,
-    color: string,
+    { strokeColor, fillColor }: DrawOptions,
   ): void {
     const { ctx } = this;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.strokeStyle = 'grey';
+    ctx.fillStyle = fillColor ?? 'black';
     ctx.fill();
+    ctx.strokeStyle = strokeColor ?? 'grey';
     ctx.stroke();
     ctx.closePath();
   }
 
   private drawPolygon = (
     points: Coordinate[],
-    color: string,
+    { strokeColor, fillColor }: DrawOptions,
   ): void => {
     const { ctx } = this;
-    ctx.strokeStyle = color;
+    ctx.strokeStyle = strokeColor ?? 'grey';
     ctx.beginPath();
     points.forEach(([x, y], index) => {
       if (!index) {
@@ -120,7 +127,7 @@ export class Drawer {
         ctx.lineTo(x, y);
       }
     });
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = fillColor ?? 'black';
     ctx.fill();
     ctx.closePath();
   }

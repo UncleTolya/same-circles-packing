@@ -1,5 +1,5 @@
-import { Area } from "@/components/Area/Area";
-import { Circle, Coordinate, Polygon } from "@/components/Drawer/Drawer";
+import { Area } from '@/components/Area/Area';
+import { Circle, Coordinate, Polygon } from '@/components/Drawer/Drawer';
 
 const intersects = require('intersects');
 
@@ -7,7 +7,6 @@ export class PolygonArea extends Area implements Polygon {
   constructor(public points: Coordinate[]) {
     super();
   }
-
 
   public isCircleFit({ x, y, r }: Circle): boolean {
     const { points } = this;
@@ -24,6 +23,18 @@ export class PolygonArea extends Area implements Polygon {
       }
     }
     return true;
+  }
+
+  public isExists(): boolean {
+    const { points } = this;
+    const firstX = points[0][0];
+    const beforeLastX = points[points.length - 3][0];
+    if (beforeLastX <= firstX) {
+      return false;
+    }
+    const firstY = points[0][1];
+    const beforeLastY = points[points.length - 2][1];
+    return beforeLastY >= firstY;
   }
 
   protected getStartCoordinate(circleRadius: number): Coordinate {

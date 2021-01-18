@@ -19,6 +19,10 @@ export class CircleArea extends Area implements Circle {
       && intersects.circlePoint(xt, yt, rt, x, y);
   }
 
+  public isExists(): boolean {
+    return this.r > 0;
+  }
+
   protected getStartCoordinate(circleRadius: number): Coordinate {
     return [this.x, this.y];
   }

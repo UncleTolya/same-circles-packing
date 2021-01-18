@@ -91,6 +91,22 @@
           flex-direction: column;
           justify-content: space-between;
         ">
+          <div style="display: flex; flex-direction: column">
+            <div style="display: flex; justify-content: space-between">
+              <div>Отступ: </div>
+              <AInputNumber
+                :min="minOffset"
+                :max="maxOffset"
+                size="small"
+                v-model="offset"
+              />
+            </div>
+            <ASlider
+              :min="minOffset"
+              :max="maxOffset"
+              v-model="offset"
+            />
+          </div>
           <ARadioGroup
             :value="areaType"
             buttonStyle="solid"
@@ -203,6 +219,7 @@ import {
 } from 'ant-design-vue';
 import Vue from 'vue';
 import 'ant-design-vue/dist/antd.css';
+import { Area } from '@/components/Area/Area';
 
 // TODO сделать начало отсчета от левого края самой длинный стороны многоугольника
 // TODO и не корень из трех а динамический угол
@@ -225,12 +242,12 @@ enum AreaType {
     return {
       AreaType,
       CANVAS_WIDTH,
-      CANVAS_HEIGHT
+      CANVAS_HEIGHT,
     };
   },
 })
 export default class CanvasArea extends Vue {
-  private offset = 10;
+  private offset = 0;
 
   private areaType: AreaType = AreaType.POLYGON;
 
@@ -238,13 +255,12 @@ export default class CanvasArea extends Vue {
   private maxRadius = 100;
   private radius = 18;
 
-  private areaRadius = 200;
+  private areaRadius = this.maxSide / 4;
 
-  private minSide = 15;
-  private maxSide = CANVAS_WIDTH - this.offset * 2;
+  private width = this.maxSide / 2;
+  private height = this.maxSide / 2;
 
-  private width = this.maxSide;
-  private height = this.maxSide;
+  private minOffset = 0;
 
   private s = 1;
   private minS = 1;
@@ -259,6 +275,18 @@ export default class CanvasArea extends Vue {
   private maxW = 100;
 
   private drawer!: Drawer;
+
+  // eslint-disable-next-line class-methods-use-this
+  private get maxSide(): number {
+    return CANVAS_WIDTH - 2;
+  }
+
+  private get minSide(): number {
+    return this.radius * 2 + 2;
+  }
+  private get maxOffset(): number {
+    return this.maxSide / 2;
+  }
 
   private get computedUpdate(): boolean {
     const {
@@ -282,48 +310,95 @@ export default class CanvasArea extends Vue {
   private redraw(): void {
     const {
       radius,
-      polygonArea,
-      circleArea,
+      area,
+      shell,
       drawer,
-      s,
-      p,
+      totalElementCount,
+      fittedCentres,
     } = this;
     drawer.resetCanvas();
-    const sum = s * p;
-    let fittedCentres: Coordinate[];
-    if (this.areaType === AreaType.POLYGON) {
-      drawer.draw(polygonArea);
-      fittedCentres = getFittedCentresRightLine(polygonArea, radius, sum);
-    } else {
-      drawer.draw(circleArea);
-      fittedCentres = getFittedCentresSpiral(circleArea, radius, sum);
+    drawer.draw(shell, { fillColor: 'white', strokeColor: 'blue' });
+    if (area.isExists()) {
+      drawer.draw(area);
     }
+    const fillColor = fittedCentres.length < totalElementCount
+      ? 'white'
+      : 'green';
     fittedCentres.forEach(([x, y]) => {
       const circle = { x, y, r: radius };
-      const color = fittedCentres.length < sum
-        ? 'white'
-        : 'green';
-      drawer.draw(circle, { color });
+      drawer.draw(circle, { fillColor, strokeColor: 'grey' });
     });
+  }
+
+  private get area(): Area {
+    return this.areaType === AreaType.POLYGON
+      ? this.polygonArea
+      : this.circleArea;
+  }
+
+  private get shell(): Area {
+    return this.areaType === AreaType.POLYGON
+      ? this.polygonShell
+      : this.circleShell;
+  }
+
+  private get totalElementCount(): number {
+    return this.s * this.p;
+  }
+
+  private get fittedCentres(): Coordinate[] {
+    const {
+      radius,
+      polygonArea,
+      circleArea,
+      totalElementCount,
+    } = this;
+    return this.areaType === AreaType.POLYGON
+      ? getFittedCentresRightLine(polygonArea, radius, totalElementCount)
+      : getFittedCentresSpiral(circleArea, radius, totalElementCount);
   }
 
   private get polygonArea(): PolygonArea {
     const { width, height, offset } = this;
-    const widthPx = width + offset;
-    const heightPx = height + offset;
+    const [xc, yc] = this.canvasCenter;
+    const [xs, ys] = [Math.round(xc - width / 2), Math.round(yc - height / 2)];
     return new PolygonArea([
-      [offset, offset],
-      [widthPx, offset],
-      [widthPx, heightPx],
-      [offset, heightPx],
-      [offset, offset],
+      [xs + offset, ys + offset],
+      [xs + width - offset, ys + offset],
+      [xs + width - offset, ys + height - offset],
+      [xs + offset, ys + height - offset],
+      [xs + offset, ys + offset],
+    ]);
+  }
+
+  private get polygonShell(): PolygonArea {
+    const { width, height } = this;
+    const [xc, yc] = this.canvasCenter;
+    const [xs, ys] = [Math.round(xc - width / 2), Math.round(yc - height / 2)];
+    return new PolygonArea([
+      [xs, ys],
+      [xs + width, ys],
+      [xs + width, ys + height],
+      [xs, ys + height],
+      [xs, ys],
     ]);
   }
 
   private get circleArea(): CircleArea {
-    const x = Math.ceil(CANVAS_WIDTH / 2);
-    const y = Math.ceil(CANVAS_HEIGHT / 2);
+    const [x, y] = this.canvasCenter;
+    return new CircleArea(x, y, this.areaRadius - this.offset);
+  }
+
+  private get circleShell(): CircleArea {
+    const [x, y] = this.canvasCenter;
     return new CircleArea(x, y, this.areaRadius);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private get canvasCenter(): Coordinate {
+    const x = Math.round(CANVAS_WIDTH / 2);
+    const y = Math.round(CANVAS_HEIGHT / 2);
+    return [x, y];
   }
 
   private mounted(): void {
