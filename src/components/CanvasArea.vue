@@ -32,6 +32,7 @@
               :max="maxRadius"
               v-model="radius"
             />
+
           </div>
           <div style="display: flex; flex-direction: column">
             <div style="display: flex; justify-content: space-between">
@@ -124,14 +125,14 @@
               <div>Радиус: </div>
               <AInputNumber
                 :min="Math.floor(minRadius)"
-                :max="Math.floor(maxWidth / 2)"
+                :max="Math.floor(maxHeight / 2 - 2)"
                 size="small"
                 v-model="areaRadius"
               />
             </div>
             <ASlider
               :min="Math.floor(minRadius)"
-              :max="Math.floor(maxWidth / 2)"
+              :max="Math.floor(maxHeight / 2 - 2)"
               v-model="areaRadius"
             />
           </div>
@@ -174,27 +175,6 @@
             />
           </div>
           <div
-            v-if="areaType === AreaType.POLYGON"
-            style="display: flex; flex-direction: column"
-          >
-            <div style="display: flex; flex-direction: column">
-              <div style="display: flex; justify-content: space-between">
-                <div>Отступ ширина: </div>
-                <AInputNumber
-                  :min="minOffset"
-                  :max="maxWidthOffset"
-                  size="small"
-                  v-model="widthOffset"
-                />
-              </div>
-              <ASlider
-                :min="minOffset"
-                :max="maxWidthOffset"
-                v-model="widthOffset"
-              />
-            </div>
-          </div>
-          <div
             v-if="areaType === AreaType.CIRCLE"
             style="display: flex; flex-direction: column"
           >
@@ -221,15 +201,52 @@
           >
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
+                <div>Отступ ширина: </div>
+                <AInputNumber
+                  :min="minOffset"
+                  :max="maxWidthOffset"
+                  size="small"
+                  v-model="widthOffset"
+                />
+              </div>
+              <ASlider
+                :min="minOffset"
+                :max="maxWidthOffset"
+                v-model="widthOffset"
+              />
+            </div>
+          </div>
+          <ACheckbox
+            v-if="areaType === AreaType.POLYGON"
+            :checked="linkOffsets"
+            @change="({ target }) => linkOffsets = target.checked"
+          ></ACheckbox>
+          <div
+            v-if="areaType === AreaType.POLYGON"
+            style="display: flex; flex-direction: column"
+          >
+            <div style="display: flex; flex-direction: column">
+              <div style="display: flex; justify-content: space-between">
                 <div>Отступ высота: </div>
                 <AInputNumber
+                  v-if="!linkOffsets"
+                  :disabled="linkOffsets"
                   :min="minOffset"
                   :max="maxHeightOffset"
                   size="small"
                   v-model="heightOffset"
                 />
+                <AInputNumber
+                  v-else
+                  disabled
+                  :min="minOffset"
+                  :max="maxHeightOffset"
+                  size="small"
+                  v-model="widthOffset"
+                />
               </div>
               <ASlider
+                v-show="!linkOffsets"
                 :min="minOffset"
                 :max="maxHeightOffset"
                 v-model="heightOffset"
@@ -264,7 +281,7 @@ import {
   Slider,
   Dropdown,
   Radio,
-  Icon,
+  Icon, Checkbox,
 } from 'ant-design-vue';
 import Vue from 'vue';
 import 'ant-design-vue/dist/antd.css';
@@ -286,6 +303,7 @@ enum AreaType {
     [Icon.name]: Icon,
     [Radio.Button.name]: Radio.Button,
     [Radio.Group.name]: Radio.Group,
+    [Checkbox.name]: Checkbox,
   },
   data() {
     return {
@@ -301,6 +319,8 @@ export default class CanvasArea extends Vue {
   private widthOffset = 0;
   private heightOffset = 0;
   private radiusOffset = 0;
+
+  private linkOffsets = true;
 
   private mouseX = 0;
   private mouseY = 0;
@@ -447,15 +467,19 @@ export default class CanvasArea extends Vue {
       height,
       widthOffset,
       heightOffset,
+      linkOffsets,
     } = this;
+    const heightOff = linkOffsets
+      ? widthOffset
+      : heightOffset;
     const [xc, yc] = WORKSPACE_CENTER;
     const [xs, ys] = [Math.round(xc - width / 2), Math.round(yc - height / 2)];
     return new PolygonArea([
-      [xs + widthOffset, ys + heightOffset],
-      [xs + width - widthOffset, ys + heightOffset],
-      [xs + width - widthOffset, ys + height - heightOffset],
-      [xs + widthOffset, ys + height - heightOffset],
-      [xs + widthOffset, ys + heightOffset],
+      [xs + widthOffset, ys + heightOff],
+      [xs + width - widthOffset, ys + heightOff],
+      [xs + width - widthOffset, ys + height - heightOff],
+      [xs + widthOffset, ys + height - heightOff],
+      [xs + widthOffset, ys + heightOff],
     ]);
   }
 
