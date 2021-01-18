@@ -5,7 +5,7 @@ import { PolygonArea } from '@/components/Area/PolygonArea';
 export const CANVAS_WIDTH = 1000;
 export const CANVAS_HEIGHT = 800;
 
-export const RULER_WIDTH = 25;
+export const RULER_WIDTH = 50;
 export const WORKSPACE_WIDTH = CANVAS_WIDTH - RULER_WIDTH;
 export const WORKSPACE_HEIGHT = CANVAS_HEIGHT - RULER_WIDTH;
 
@@ -87,8 +87,21 @@ export class Drawer {
       thickness: 3,
       ...options ?? {},
     };
+    const { ctx } = this;
     if (area instanceof PolygonArea) {
       this.drawPolygon(area.points, opt);
+      ctx.beginPath();
+      const [lsx, lsy] =  area.points[0];
+      const [rsx, rsy] =  area.points[1];
+      ctx.strokeStyle = 'grey';
+      ctx.moveTo(lsx, lsy);
+      ctx.lineTo(lsx, 0)
+      ctx.stroke();
+      ctx.moveTo(rsx, rsy);
+      ctx.lineTo(rsx, 0)
+      ctx.stroke();
+      ctx.closePath();
+
     } else if (area instanceof CircleArea) {
       this.drawCircle({ x: area.x, y: area.y, r: area.r }, opt);
     }
@@ -115,11 +128,11 @@ export class Drawer {
       ctx.beginPath();
       ctx.moveTo(i * 10 + RULER_WIDTH, RULER_WIDTH);
       if (i * 10 !== 0 && (i * 10) % 100 === 0) {
-        ctx.lineTo(i * 10 + RULER_WIDTH, RULER_WIDTH - RULER_WIDTH * 0.8);
+        ctx.lineTo(i * 10 + RULER_WIDTH, RULER_WIDTH - RULER_WIDTH * 0.4);
         ctx.font = '10px Arial';
-        ctx.strokeText(`${i * 10}`, i * 10 + RULER_WIDTH + 5, RULER_WIDTH - RULER_WIDTH * 0.5);
+        ctx.strokeText(`${i * 10}`, i * 10 + RULER_WIDTH + 5, RULER_WIDTH - RULER_WIDTH * 0.3);
       } else {
-        ctx.lineTo(i * 10 + RULER_WIDTH, RULER_WIDTH - RULER_WIDTH * 0.3);
+        ctx.lineTo(i * 10 + RULER_WIDTH, RULER_WIDTH - RULER_WIDTH * 0.2);
       }
       ctx.stroke();
       ctx.closePath();
