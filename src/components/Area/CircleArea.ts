@@ -1,5 +1,5 @@
-import { Area } from "@/components/Area/Area";
-import { Circle, Coordinate } from "@/components/Drawer/Drawer";
+import { Area } from '@/components/Area/Area';
+import { Circle, Coordinate } from '@/components/Drawer/Drawer';
 
 const intersects = require('intersects');
 
@@ -12,10 +12,11 @@ export class CircleArea extends Area implements Circle {
     super();
   }
 
-
   public isCircleFit({ x, y, r }: Circle): boolean {
     const { x: xt, y: yt, r: rt } = this;
-    return !intersects.circleCircle(x, y, r, xt, yt, rt);
+    const dc = Math.sqrt((xt - x) ** 2 + (yt - y) ** 2);
+    return !(rt - r < dc && rt + r > dc)
+      && intersects.circlePoint(xt, yt, rt, x, y);
   }
 
   protected getStartCoordinate(circleRadius: number): Coordinate {

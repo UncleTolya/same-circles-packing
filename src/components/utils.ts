@@ -1,23 +1,21 @@
-import {Area} from "@/components/Area/Area";
-import {Circle, Coordinate} from "@/components/Drawer/Drawer";
+import { Area } from '@/components/Area/Area';
+import { Circle, Coordinate } from '@/components/Drawer/Drawer';
 
-export const noop = (...elements: any): void => {};
+export const noop = (...elements: any): void => { /* noop */ };
 
-const getCloseCentres = ({ x, y, r }: Circle): Coordinate[] => {
-  return [
-    [x + 2 * r, y],
-    [x + r, y + r * Math.sqrt(3)],
-    [x - r, y + r * Math.sqrt(3)],
-    [x - 2 * r, y],
-    [x - r, y - r * Math.sqrt(3)],
-    [x + r, y - r * Math.sqrt(3)],
-  ];
-}
+const getCloseCentres = ({ x, y, r }: Circle): Coordinate[] => [
+  [x + 2 * r, y],
+  [x + r, y + r * Math.sqrt(3)],
+  [x - r, y + r * Math.sqrt(3)],
+  [x - 2 * r, y],
+  [x - r, y - r * Math.sqrt(3)],
+  [x + r, y - r * Math.sqrt(3)],
+];
 
 export const getFittedCentresSpiral = (
   area: Area,
   circleRadius: number,
-  maximum: number = 10000,
+  maximum = 10000,
 ): Coordinate[] => {
   let firstCenter;
   try {
@@ -50,12 +48,12 @@ export const getFittedCentresSpiral = (
     }
   }
   return fittedCentres;
-}
+};
 
 export const getFittedCentresRightLine = (
   area: Area,
   circleRadius: number,
-  maximum: number = 10000,
+  maximum = 10000,
 ): Coordinate[] => {
   let firstCenter;
   try {
@@ -76,7 +74,8 @@ export const getFittedCentresRightLine = (
       return [circleDR[0], circleDR[1]];
     }
     return undefined;
-  }
+  };
+
   let lineStarter = firstCenter;
   const queue: Coordinate[] = [getR(firstCenter)];
   while (queue.length && (maximum === 0 || fittedCentres.length <= maximum - 1)) {
@@ -95,9 +94,9 @@ export const getFittedCentresRightLine = (
         fittedCentres.push(d);
         queue.push(getR(d));
       } else {
-        break
+        break;
       }
     }
   }
   return fittedCentres;
-}
+};

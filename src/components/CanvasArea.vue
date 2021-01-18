@@ -2,145 +2,180 @@
   <div>
     <div style="width: 100%; display: flex; padding: 1rem">
       <div style="
-        width: 250px;
+        width: 300px;
         display: flex;
         flex-direction: column;
-        justify-content: space-evenly;
+        justify-content: flex-start;
         padding: 1rem;
       ">
-        <ADropdown>
-          <template #overlay>
-            <AMenu @click="(item) => areaType = item.key">
-              <AMenuItem key="polygon">
-                polygon
-              </AMenuItem>
-              <AMenuItem key="circle">
-                circle
-              </AMenuItem>
-            </AMenu>
-          </template>
-          <AButton>
-            areaType
-          </AButton>
-        </ADropdown>
-        <div style="display: flex; flex: 1; flex-direction: column">
-          <div style="display: flex; justify-content: space-between">
-            <div>Radius: </div>
-            <AInputNumber
+<!--        <div style="margin-bottom: 3rem; font-size: 1.5rem">-->
+<!--          Расчет формы батареи-->
+<!--        </div>-->
+        <div style="
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          margin-bottom: 3rem;
+        ">
+          <div style="display: flex; flex-direction: column">
+            <div style="display: flex; justify-content: space-between">
+              <div>Радиус элемента: </div>
+              <AInputNumber
+                :min="minRadius"
+                :max="maxRadius"
+                size="small"
+                v-model="radius"
+              />
+            </div>
+            <ASlider
               :min="minRadius"
               :max="maxRadius"
-              size="small"
               v-model="radius"
             />
           </div>
-          <ASlider
-            :min="minRadius"
-            :max="maxRadius"
-            v-model="radius"
-          />
-        </div>
-        <div style="display: flex; flex: 1; flex-direction: column">
-          <div style="display: flex; justify-content: space-between">
-            <div>Area Radius: </div>
-            <AInputNumber
-              :min="Math.floor(minSide / 2)"
-              :max="Math.floor(maxSide / 2)"
-              size="small"
-              v-model="areaRadius"
-            />
-          </div>
-          <ASlider
-            :min="Math.floor(minSide / 2)"
-            :max="Math.floor(maxSide / 2)"
-            v-model="areaRadius"
-          />
-        </div>
-        <div style="display: flex; flex: 1; flex-direction: column">
-          <div style="display: flex; justify-content: space-between">
-            <div>Width: </div>
-            <AInputNumber
-              :min="minSide"
-              :max="maxSide"
-              size="small"
-              v-model="width"
-            />
-          </div>
-          <ASlider
-            :min="minSide"
-            :max="maxSide"
-            v-model="width"
-          />
-        </div>
-        <div style="display: flex; flex: 1; flex-direction: column">
-          <div style="display: flex; justify-content: space-between">
-            <div>Height: </div>
-            <AInputNumber
-              :min="minSide"
-              :max="maxSide"
-              size="small"
-              v-model="height"
-            />
-          </div>
-          <ASlider
-            :min="minSide"
-            :max="maxSide"
-            v-model="height"
-          />
-        </div>
-        <div style="display: flex; flex: 1; flex-direction: column">
-          <div style="display: flex; justify-content: space-between">
-            <div>S: </div>
-            <AInputNumber
+          <div style="display: flex; flex-direction: column">
+            <div style="display: flex; justify-content: space-between">
+              <div>Длина серии (S): </div>
+              <AInputNumber
+                :min="minS"
+                :max="maxS"
+                size="small"
+                v-model="s"
+              />
+            </div>
+            <ASlider
               :min="minS"
               :max="maxS"
-              size="small"
               v-model="s"
             />
           </div>
-          <ASlider
-            :min="minS"
-            :max="maxS"
-            v-model="s"
-          />
-        </div>
-        <div style="display: flex; flex: 1; flex-direction: column">
           <div style="display: flex; flex-direction: column">
-            <div style="display: flex; justify-content: space-between">
-              <div>P: </div>
-              <AInputNumber
+            <div style="display: flex; flex-direction: column">
+              <div style="display: flex; justify-content: space-between">
+                <div>Кол-во параллелей (P): </div>
+                <AInputNumber
+                  :min="minP"
+                  :max="maxP"
+                  size="small"
+                  v-model="p"
+                />
+              </div>
+              <ASlider
                 :min="minP"
                 :max="maxP"
-                size="small"
                 v-model="p"
               />
             </div>
-            <ASlider
-              :min="minP"
-              :max="maxP"
-              v-model="p"
-            />
           </div>
-        </div>
-        <div style="display: flex; flex: 1; flex-direction: column">
           <div style="display: flex; flex-direction: column">
-            <div style="display: flex; justify-content: space-between">
-              <div>Weight: </div>
-              <AInputNumber
+            <div style="display: flex; flex-direction: column">
+              <div style="display: flex; justify-content: space-between">
+                <div>Вес элемента: </div>
+                <AInputNumber
+                  :min="minW"
+                  :max="maxW"
+                  size="small"
+                  v-model="w"
+                />
+              </div>
+              <ASlider
                 :min="minW"
                 :max="maxW"
-                size="small"
                 v-model="w"
               />
             </div>
+          </div>
+        </div>
+        <div style="
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        ">
+          <ARadioGroup
+            :value="areaType"
+            buttonStyle="solid"
+            size="small"
+            style="display: flex; margin-bottom: 1rem"
+          >
+            <ARadioButton
+              :key="AreaType.CIRCLE"
+              style="flex: 1"
+              :value="AreaType.CIRCLE"
+              @click="areaType = AreaType.CIRCLE"
+            >
+              <AIcon type="circle"></AIcon>
+              Круг
+            </ARadioButton>
+            <ARadioButton
+              :key="AreaType.POLYGON"
+              style="flex: 1"
+              :value="AreaType.POLYGON"
+              @click="areaType = AreaType.POLYGON"
+            >
+              <AIcon type="square"></AIcon>
+              Прямоугольник
+            </ARadioButton>
+          </ARadioGroup>
+          <div
+            v-if="areaType === AreaType.CIRCLE"
+            style="display: flex; flex-direction: column"
+          >
+            <div style="display: flex; justify-content: space-between">
+              <div>Радиус: </div>
+              <AInputNumber
+                :min="Math.floor(minRadius)"
+                :max="Math.floor(maxSide / 2)"
+                size="small"
+                v-model="areaRadius"
+              />
+            </div>
             <ASlider
-              :min="minW"
-              :max="maxW"
-              v-model="w"
+              :min="Math.floor(minRadius)"
+              :max="Math.floor(maxSide / 2)"
+              v-model="areaRadius"
+            />
+          </div>
+          <div
+            v-if="areaType === AreaType.POLYGON"
+            style="display: flex; flex-direction: column"
+          >
+            <div style="display: flex; justify-content: space-between">
+              <div>Ширина: </div>
+              <AInputNumber
+                :min="minSide"
+                :max="maxSide"
+                size="small"
+                v-model="width"
+              />
+            </div>
+            <ASlider
+              :min="minSide"
+              :max="maxSide"
+              v-model="width"
+            />
+          </div>
+          <div
+            v-if="areaType === AreaType.POLYGON"
+            style="display: flex; flex-direction: column"
+          >
+            <div style="display: flex; justify-content: space-between">
+              <div>Высота: </div>
+              <AInputNumber
+                :min="minSide"
+                :max="maxSide"
+                size="small"
+                v-model="height"
+              />
+            </div>
+            <ASlider
+              :min="minSide"
+              :max="maxSide"
+              v-model="height"
             />
           </div>
         </div>
       </div>
-      <canvas id="canvas" width="600" height="600"></canvas>
+      <canvas id="canvas" :width="CANVAS_WIDTH" :height="CANVAS_HEIGHT"></canvas>
     </div>
     <div v-if="computedUpdate && false"></div>
   </div>
@@ -151,14 +186,20 @@
 
 import { CircleArea } from '@/components/Area/CircleArea';
 import { PolygonArea } from '@/components/Area/PolygonArea';
-import { CANVAS_HEIGHT, CANVAS_WIDTH, Coordinate, Drawer } from '@/components/Drawer/Drawer';
+import {
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+  Coordinate,
+  Drawer,
+} from '@/components/Drawer/Drawer';
 import { getFittedCentresRightLine, getFittedCentresSpiral, noop } from '@/components/utils';
 import { Component } from 'vue-property-decorator';
 import {
   InputNumber,
   Slider,
   Dropdown,
-  Menu, Button,
+  Radio,
+  Icon,
 } from 'ant-design-vue';
 import Vue from 'vue';
 import 'ant-design-vue/dist/antd.css';
@@ -166,44 +207,56 @@ import 'ant-design-vue/dist/antd.css';
 // TODO сделать начало отсчета от левого края самой длинный стороны многоугольника
 // TODO и не корень из трех а динамический угол
 
+enum AreaType {
+  POLYGON = 'POLYGON',
+  CIRCLE = 'CIRCLE',
+}
+
 @Component({
   components: {
-    [Menu.Item.name]: Menu.Item,
-    [Menu.name]: Menu,
     [Dropdown.name]: Dropdown,
     [InputNumber.name]: InputNumber,
     [Slider.name]: Slider,
-    [Button.name]: Button,
+    [Icon.name]: Icon,
+    [Radio.Button.name]: Radio.Button,
+    [Radio.Group.name]: Radio.Group,
+  },
+  data() {
+    return {
+      AreaType,
+      CANVAS_WIDTH,
+      CANVAS_HEIGHT
+    };
   },
 })
 export default class CanvasArea extends Vue {
   private offset = 10;
 
-  private areaType: 'polygon' | 'circle' = 'polygon';
+  private areaType: AreaType = AreaType.POLYGON;
 
   private minRadius = 10;
-  private maxRadius = 400;
-  private radius = this.minRadius;
+  private maxRadius = 100;
+  private radius = 18;
 
-  private areaRadius = this.minRadius + 1;
+  private areaRadius = 200;
 
   private minSide = 15;
-  private maxSide = 600 - this.offset * 2;
+  private maxSide = CANVAS_WIDTH - this.offset * 2;
 
   private width = this.maxSide;
   private height = this.maxSide;
 
   private s = 1;
   private minS = 1;
-  private maxS = 3000;
+  private maxS = 100;
 
   private p = 1;
   private minP = 0;
-  private maxP = 250;
+  private maxP = 1000;
 
   private w = 50;
   private minW = 1;
-  private maxW = 250;
+  private maxW = 100;
 
   private drawer!: Drawer;
 
@@ -211,11 +264,14 @@ export default class CanvasArea extends Vue {
     const {
       radius,
       polygonArea,
+      circleArea,
+      areaRadius,
+      areaType,
       drawer,
       s,
       p,
     } = this;
-    noop(radius, polygonArea, s, p, drawer);
+    noop(radius, polygonArea, s, p, drawer, circleArea, areaRadius, areaType);
     if (radius < this.minRadius || radius > this.maxRadius || !drawer) {
       return false;
     }
@@ -235,7 +291,7 @@ export default class CanvasArea extends Vue {
     drawer.resetCanvas();
     const sum = s * p;
     let fittedCentres: Coordinate[];
-    if (this.areaType === 'polygon') {
+    if (this.areaType === AreaType.POLYGON) {
       drawer.draw(polygonArea);
       fittedCentres = getFittedCentresRightLine(polygonArea, radius, sum);
     } else {
