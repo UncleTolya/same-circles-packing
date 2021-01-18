@@ -1,6 +1,7 @@
 import { Area } from '@/components/Area/Area';
 import { CircleArea } from '@/components/Area/CircleArea';
 import { PolygonArea } from '@/components/Area/PolygonArea';
+import index from "@/store";
 
 export const CANVAS_WIDTH = 1000;
 export const CANVAS_HEIGHT = 800;
@@ -85,6 +86,7 @@ export class Drawer {
     const opt = {
       strokeColor: 'black',
       thickness: 3,
+      index: 0,
       ...options ?? {},
     };
     const { ctx } = this;
@@ -95,10 +97,14 @@ export class Drawer {
       const [rsx, rsy] =  area.points[1];
       ctx.strokeStyle = 'grey';
       ctx.moveTo(lsx, lsy);
-      ctx.lineTo(lsx, 0)
-      ctx.stroke();
+      ctx.lineTo(lsx, 0);
       ctx.moveTo(rsx, rsy);
-      ctx.lineTo(rsx, 0)
+      ctx.lineTo(rsx, 0);
+      ctx.moveTo(lsx, 2 + opt.index * 15);
+      ctx.lineTo(rsx, 2 + opt.index * 15);
+      ctx.stroke();
+      ctx.font = '10px Arial';
+      ctx.strokeText(`${rsx - lsx}`, (rsx - lsx) / 2 + lsx, opt.index * 15 + 10);
       ctx.stroke();
       ctx.closePath();
 

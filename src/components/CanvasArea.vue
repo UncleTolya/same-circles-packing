@@ -403,14 +403,22 @@ export default class CanvasArea extends Vue {
       drawer,
       totalElementCount,
       fittedCentres,
+      areaType,
+      radiusOffset,
+      widthOffset,
+      heightOffset,
     } = this;
     drawer.resetCanvas();
-    if (area.isExists()) {
+    const hasOffset = areaType === AreaType.CIRCLE
+      ? radiusOffset
+      : widthOffset || heightOffset;
+    if (hasOffset && area.isExists()) {
       drawer.draw(area, {
         strokeColor: fittedCentres.length < totalElementCount
           ? 'rgba(211, 33, 45, 0.5)'
           : 'black',
         thickness: undefined,
+        index: 1,
       });
     }
     const areaStrokeColor = fittedCentres.length < totalElementCount
