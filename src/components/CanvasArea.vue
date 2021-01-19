@@ -124,14 +124,14 @@
             <div style="display: flex; justify-content: space-between">
               <div>Радиус: </div>
               <AInputNumber
-                :min="Math.floor(minRadius)"
+                :min="radius"
                 :max="Math.floor(maxHeight / 2 - 2)"
                 size="small"
                 v-model="areaRadius"
               />
             </div>
             <ASlider
-              :min="Math.floor(minRadius)"
+              :min="radius"
               :max="Math.floor(maxHeight / 2 - 2)"
               v-model="areaRadius"
             />
@@ -183,14 +183,14 @@
                 <div>Отступ: </div>
                 <AInputNumber
                   :min="minOffset"
-                  :max="maxWidthOffset"
+                  :max="maxRadiusOffset"
                   size="small"
                   v-model="radiusOffset"
                 />
               </div>
               <ASlider
                 :min="minOffset"
-                :max="maxWidthOffset"
+                :max="maxRadiusOffset"
                 v-model="radiusOffset"
               />
             </div>
@@ -201,18 +201,18 @@
           >
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
-                <div>Отступ ширина: </div>
+                <div>Отступ высота: </div>
                 <AInputNumber
                   :min="minOffset"
-                  :max="maxWidthOffset"
+                  :max="maxHeightOffset"
                   size="small"
-                  v-model="widthOffset"
+                  v-model="heightOffset"
                 />
               </div>
               <ASlider
                 :min="minOffset"
-                :max="maxWidthOffset"
-                v-model="widthOffset"
+                :max="maxHeightOffset"
+                v-model="heightOffset"
               />
             </div>
           </div>
@@ -227,29 +227,28 @@
           >
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
-                <div>Отступ высота: </div>
+                <div>Отступ ширина: </div>
                 <AInputNumber
                   v-if="!linkOffsets"
-                  :disabled="linkOffsets"
                   :min="minOffset"
-                  :max="maxHeightOffset"
+                  :max="maxWidthOffset"
                   size="small"
-                  v-model="heightOffset"
+                  v-model="widthOffset"
                 />
                 <AInputNumber
                   v-else
                   disabled
                   :min="minOffset"
-                  :max="maxHeightOffset"
+                  :max="maxWidthOffset"
                   size="small"
-                  v-model="widthOffset"
+                  v-model="heightOffset"
                 />
               </div>
               <ASlider
                 v-show="!linkOffsets"
                 :min="minOffset"
-                :max="maxHeightOffset"
-                v-model="heightOffset"
+                :max="maxWidthOffset"
+                v-model="widthOffset"
               />
             </div>
           </div>
@@ -322,9 +321,6 @@ export default class CanvasArea extends Vue {
 
   private linkOffsets = true;
 
-  private mouseX = 0;
-  private mouseY = 0;
-
   private areaType: AreaType = AreaType.POLYGON;
 
   private minRadius = 10;
@@ -361,7 +357,12 @@ export default class CanvasArea extends Vue {
     return this.radius * 2 + 2;
   }
   private get maxWidthOffset(): number {
-    return this.maxWidth / 2;
+    return (this.width + 2) / 2;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private get maxRadiusOffset(): number {
+    return this.areaRadius;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -373,7 +374,7 @@ export default class CanvasArea extends Vue {
     return this.radius * 2 + 2;
   }
   private get maxHeightOffset(): number {
-    return this.maxHeight / 2;
+    return (this.height + 2) / 2;
   }
 
   private get computedUpdate(): boolean {
@@ -412,6 +413,14 @@ export default class CanvasArea extends Vue {
     const hasOffset = areaType === AreaType.CIRCLE
       ? radiusOffset
       : widthOffset || heightOffset;
+    const areaStrokeColor = fittedCentres.length < totalElementCount
+      ? 'rgba(211, 33, 45, 0.5)'
+      : 'black';
+    const elementFillColor = fittedCentres.length < totalElementCount
+      ? 'white'
+      : 'green';
+    drawer.draw(shell, { strokeColor: areaStrokeColor });
+    drawer.drawSizes(shell, Math.cos(45));
     if (hasOffset && area.isExists()) {
       drawer.draw(area, {
         strokeColor: fittedCentres.length < totalElementCount
@@ -420,14 +429,8 @@ export default class CanvasArea extends Vue {
         thickness: undefined,
         index: 1,
       });
+      drawer.drawSizes(area, -Math.cos(45), 1);
     }
-    const areaStrokeColor = fittedCentres.length < totalElementCount
-      ? 'rgba(211, 33, 45, 0.5)'
-      : 'black';
-    const elementFillColor = fittedCentres.length < totalElementCount
-      ? 'white'
-      : 'green';
-    drawer.draw(shell, { strokeColor: areaStrokeColor });
     fittedCentres.forEach(([x, y]) => {
       const circle = { x, y, r: radius };
       drawer.draw(
@@ -439,6 +442,15 @@ export default class CanvasArea extends Vue {
         },
       );
     });
+    const lastElement = fittedCentres[fittedCentres.length - 1];
+    drawer.drawCircleSizes(
+      {
+        x: lastElement[0],
+        y: lastElement[1],
+        r: radius,
+      },
+      -Math.cos(60),
+    );
   }
 
   private get area(): Area {
@@ -477,17 +489,17 @@ export default class CanvasArea extends Vue {
       heightOffset,
       linkOffsets,
     } = this;
-    const heightOff = linkOffsets
-      ? widthOffset
-      : heightOffset;
+    const widthOff = linkOffsets
+      ? heightOffset
+      : widthOffset;
     const [xc, yc] = WORKSPACE_CENTER;
     const [xs, ys] = [Math.round(xc - width / 2), Math.round(yc - height / 2)];
     return new PolygonArea([
-      [xs + widthOffset, ys + heightOff],
-      [xs + width - widthOffset, ys + heightOff],
-      [xs + width - widthOffset, ys + height - heightOff],
-      [xs + widthOffset, ys + height - heightOff],
-      [xs + widthOffset, ys + heightOff],
+      [xs + widthOff, ys + heightOffset],
+      [xs + width - widthOff, ys + heightOffset],
+      [xs + width - widthOff, ys + height - heightOffset],
+      [xs + widthOff, ys + height - heightOffset],
+      [xs + widthOff, ys + heightOffset],
     ]);
   }
 
@@ -522,17 +534,6 @@ export default class CanvasArea extends Vue {
     }
     this.drawer = new Drawer(ctx);
     this.redraw();
-    this.addMouseListeners(canvas, ctx);
-  }
-
-  private addMouseListeners(
-    canvas: HTMLCanvasElement,
-    ctx: CanvasRenderingContext2D,
-  ): void {
-    canvas.addEventListener('mousemove', ({ offsetX, offsetY }) => {
-      this.mouseX = offsetX;
-      this.mouseY = offsetY;
-    });
   }
 }
 </script>
