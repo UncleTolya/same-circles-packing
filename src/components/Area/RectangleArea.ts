@@ -1,9 +1,9 @@
 import { Area } from '@/components/Area/Area';
-import { Circle, Coordinate, Polygon } from '@/components/Drawer/Drawer';
+import { Circle, Coordinate, Rectangle } from '@/components/Drawer/Drawer';
 
 const intersects = require('intersects');
 
-export class PolygonArea extends Area implements Polygon {
+export class RectangleArea extends Area implements Rectangle {
   constructor(public points: Coordinate[]) {
     super();
   }

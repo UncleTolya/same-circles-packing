@@ -108,10 +108,10 @@
               Круг
             </ARadioButton>
             <ARadioButton
-              :key="AreaType.POLYGON"
+              :key="AreaType.RECTANGLE"
               style="flex: 1"
-              :value="AreaType.POLYGON"
-              @click="areaType = AreaType.POLYGON"
+              :value="AreaType.RECTANGLE"
+              @click="areaType = AreaType.RECTANGLE"
             >
               <AIcon type="square"></AIcon>
               Прямоугольник
@@ -137,7 +137,7 @@
             />
           </div>
           <div
-            v-if="areaType === AreaType.POLYGON"
+            v-if="areaType === AreaType.RECTANGLE"
             style="display: flex; flex-direction: column"
           >
             <div style="display: flex; justify-content: space-between">
@@ -156,7 +156,7 @@
             />
           </div>
           <div
-            v-if="areaType === AreaType.POLYGON"
+            v-if="areaType === AreaType.RECTANGLE"
             style="display: flex; flex-direction: column"
           >
             <div style="display: flex; justify-content: space-between">
@@ -196,7 +196,7 @@
             </div>
           </div>
           <div
-            v-if="areaType === AreaType.POLYGON"
+            v-if="areaType === AreaType.RECTANGLE"
             style="display: flex; flex-direction: column"
           >
             <div style="display: flex; flex-direction: column">
@@ -217,12 +217,12 @@
             </div>
           </div>
           <ACheckbox
-            v-if="areaType === AreaType.POLYGON"
+            v-if="areaType === AreaType.RECTANGLE"
             :checked="linkOffsets"
             @change="({ target }) => linkOffsets = target.checked"
           ></ACheckbox>
           <div
-            v-if="areaType === AreaType.POLYGON"
+            v-if="areaType === AreaType.RECTANGLE"
             style="display: flex; flex-direction: column"
           >
             <div style="display: flex; flex-direction: column">
@@ -264,7 +264,7 @@
 /* eslint-disable lines-between-class-members */
 
 import { CircleArea } from '@/components/Area/CircleArea';
-import { PolygonArea } from '@/components/Area/PolygonArea';
+import { RectangleArea } from '@/components/Area/RectangleArea';
 import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
@@ -290,7 +290,7 @@ import { Area } from '@/components/Area/Area';
 // TODO и не корень из трех а динамический угол
 
 enum AreaType {
-  POLYGON = 'POLYGON',
+  RECTANGLE = 'RECTANGLE',
   CIRCLE = 'CIRCLE',
 }
 
@@ -321,7 +321,7 @@ export default class CanvasArea extends Vue {
 
   private linkOffsets = true;
 
-  private areaType: AreaType = AreaType.POLYGON;
+  private areaType: AreaType = AreaType.CIRCLE;
 
   private minRadius = 10;
   private maxRadius = 100;
@@ -380,16 +380,18 @@ export default class CanvasArea extends Vue {
   private get computedUpdate(): boolean {
     const {
       radius,
-      polygonArea,
+      rectangleArea,
       circleArea,
       areaRadius,
       areaType,
       drawer,
       s,
       p,
+      maxRadius,
+      minRadius,
     } = this;
-    noop(radius, polygonArea, s, p, drawer, circleArea, areaRadius, areaType);
-    if (radius < this.minRadius || radius > this.maxRadius || !drawer) {
+    noop(radius, rectangleArea, s, p, drawer, circleArea, areaRadius, areaType);
+    if (radius < minRadius || radius > maxRadius || !drawer) {
       return false;
     }
     this.redraw();
@@ -454,14 +456,14 @@ export default class CanvasArea extends Vue {
   }
 
   private get area(): Area {
-    return this.areaType === AreaType.POLYGON
-      ? this.polygonArea
+    return this.areaType === AreaType.RECTANGLE
+      ? this.rectangleArea
       : this.circleArea;
   }
 
   private get shell(): Area {
-    return this.areaType === AreaType.POLYGON
-      ? this.polygonShell
+    return this.areaType === AreaType.RECTANGLE
+      ? this.rectangleShell
       : this.circleShell;
   }
 
@@ -472,16 +474,16 @@ export default class CanvasArea extends Vue {
   private get fittedCentres(): Coordinate[] {
     const {
       radius,
-      polygonArea,
+      rectangleArea,
       circleArea,
       totalElementCount,
     } = this;
-    return this.areaType === AreaType.POLYGON
-      ? getFittedCentresRightLine(polygonArea, radius, totalElementCount)
+    return this.areaType === AreaType.RECTANGLE
+      ? getFittedCentresRightLine(rectangleArea, radius, totalElementCount)
       : getFittedCentresSpiral(circleArea, radius, totalElementCount);
   }
 
-  private get polygonArea(): PolygonArea {
+  private get rectangleArea(): RectangleArea {
     const {
       width,
       height,
@@ -494,7 +496,7 @@ export default class CanvasArea extends Vue {
       : widthOffset;
     const [xc, yc] = WORKSPACE_CENTER;
     const [xs, ys] = [Math.round(xc - width / 2), Math.round(yc - height / 2)];
-    return new PolygonArea([
+    return new RectangleArea([
       [xs + widthOff, ys + heightOffset],
       [xs + width - widthOff, ys + heightOffset],
       [xs + width - widthOff, ys + height - heightOffset],
@@ -503,11 +505,11 @@ export default class CanvasArea extends Vue {
     ]);
   }
 
-  private get polygonShell(): PolygonArea {
+  private get rectangleShell(): RectangleArea {
     const { width, height } = this;
     const [xc, yc] = WORKSPACE_CENTER;
     const [xs, ys] = [Math.round(xc - width / 2), Math.round(yc - height / 2)];
-    return new PolygonArea([
+    return new RectangleArea([
       [xs, ys],
       [xs + width, ys],
       [xs + width, ys + height],

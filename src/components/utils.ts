@@ -5,11 +5,11 @@ export const noop = (...elements: any): void => { /* noop */ };
 
 const getCloseCentres = ({ x, y, r }: Circle): Coordinate[] => [
   [x + 2 * r, y],
-  [x + r, y + r * Math.sqrt(3)],
-  [x - r, y + r * Math.sqrt(3)],
+  [x + r, y + r * Math.fround(Math.sqrt(3))],
+  [x - r, y + r * Math.fround(Math.sqrt(3))],
   [x - 2 * r, y],
-  [x - r, y - r * Math.sqrt(3)],
-  [x + r, y - r * Math.sqrt(3)],
+  [x - r, y - r * Math.fround(Math.sqrt(3))],
+  [x + r, y - r * Math.fround(Math.sqrt(3))],
 ];
 
 export const getFittedCentresSpiral = (

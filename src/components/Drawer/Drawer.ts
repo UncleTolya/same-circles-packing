@@ -1,6 +1,6 @@
 import { Area } from '@/components/Area/Area';
 import { CircleArea } from '@/components/Area/CircleArea';
-import { PolygonArea } from '@/components/Area/PolygonArea';
+import { RectangleArea } from '@/components/Area/RectangleArea';
 
 export const CANVAS_WIDTH = 1200;
 export const CANVAS_HEIGHT = 800;
@@ -16,7 +16,7 @@ export const WORKSPACE_CENTER = [
 
 export type Coordinate = [number, number];
 
-export interface Polygon {
+export interface Rectangle {
   points: Coordinate[];
 }
 export interface Circle {
@@ -25,7 +25,7 @@ export interface Circle {
   r: number;
 }
 
-type DrawElement = Polygon | Circle;
+type DrawElement = Rectangle | Circle;
 
 interface DrawOptions {
   index?: number;
@@ -55,8 +55,8 @@ export class Drawer {
     angle = 1,
     index = 0,
   ) {
-    if ((element as Polygon).points) {
-      this.drawRectangleSizes((element as Polygon).points, index);
+    if ((element as Rectangle).points) {
+      this.drawRectangleSizes((element as Rectangle).points, index);
     } else {
       this.drawCircleSizes(element as Circle, angle);
     }
@@ -82,8 +82,8 @@ export class Drawer {
       strokeColor: 'grey',
       ...options ?? {},
     };
-    if ((element as Polygon).points) {
-      this.drawPolygon((element as Polygon).points, opt);
+    if ((element as Rectangle).points) {
+      this.drawRectangle((element as Rectangle).points, opt);
     } else {
       this.drawCircle(element as Circle, opt);
     }
@@ -99,8 +99,8 @@ export class Drawer {
       index: 0,
       ...options ?? {},
     };
-    if (area instanceof PolygonArea) {
-      this.drawPolygon(area.points, opt);
+    if (area instanceof RectangleArea) {
+      this.drawRectangle(area.points, opt);
     } else if (area instanceof CircleArea) {
       this.drawCircle({ x: area.x, y: area.y, r: area.r }, opt);
     }
@@ -284,7 +284,7 @@ export class Drawer {
     ctx.lineWidth = 1;
   }
 
-  private drawPolygon = (
+  private drawRectangle = (
     points: Coordinate[],
     { strokeColor, fillColor, thickness }: DrawOptions,
   ): void => {
