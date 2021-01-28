@@ -8,9 +8,9 @@
         justify-content: flex-start;
         padding: 1rem;
       ">
-<!--        <div style="margin-bottom: 3rem; font-size: 1.5rem">-->
-<!--          Расчет формы батареи-->
-<!--        </div>-->
+        <div style="margin-bottom: 3rem; font-size: 1.5rem">
+          Расчет формы батареи
+        </div>
         <div style="
           display: flex;
           flex-direction: column;
@@ -261,8 +261,6 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable lines-between-class-members */
-
 import { CircleArea } from '@/components/Area/CircleArea';
 import { RectangleArea } from '@/components/Area/RectangleArea';
 import {

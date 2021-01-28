@@ -24,13 +24,13 @@ export const getFittedCentresSpiral = (
     return [];
   }
 
-  const queue = [firstCenter, ...getCloseCentres({
+  const queue: Coordinate[] = [firstCenter, ...getCloseCentres({
     x: firstCenter[0],
     y: firstCenter[1],
     r: circleRadius,
   })];
   const checkedCentres: Coordinate[] = [];
-  const fittedCentres = [];
+  const fittedCentres: Coordinate[] = [];
   while (queue.length && (maximum === 0 || fittedCentres.length <= maximum - 1)) {
     const center = queue.shift();
     if (!center) {

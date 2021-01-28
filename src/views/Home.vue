@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <CanvasArea msg="Welcome to Your Vue.js App"/>
+    <CanvasArea msg="Welcome to Your Vue.js Ap"/>
   </div>
 </template>
 

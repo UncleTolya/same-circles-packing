@@ -1,16 +1,26 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "strict": true,
-    "jsx": "preserve",
-    "importHelpers": true,
     "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "skipLibCheck": true,
+    "target": "es6",
+    "module": "amd",
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "strict": true,
+    "sourceMap": false,
+    "declaration": false,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "suppressImplicitAnyIndexErrors": false,
+    "typeRoots": [
+      "node_modules/@types",
+      "./src/main/webapp/app/@types"
+    ],
     "baseUrl": ".",
     "types": [
       "webpack-env"
@@ -20,12 +30,6 @@
         "src/*"
       ]
     },
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ]
   },
   "include": [
     "src/**/*.ts",
