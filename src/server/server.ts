@@ -1,16 +1,19 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const passport = require('passport');
 const DB = require('./DataBase');
-
-// const initializePassport = require('./passportConfig');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const db: DataBase = new DB();
 
-// initializePassport(passport, db);
-
 const server = express();
 const jsonParser = bodyParser.json();
+
+export interface User {
+  id: string;
+  name: string;
+  password: string;
+}
 
 // CORS middleware
 const allowCrossDomain = function (req, res, next) {
@@ -27,12 +30,40 @@ server.get('/', (req: any, res: any) => {
 });
 
 server.post('/login', jsonParser, async ({ body }: any, res: any) => {
-  const user = await db.selectByName<object>(body.name);
-  res.send(user);
+  const user = await db.selectByName<User>(body.name);
+  if (!user) {
+    res.status(404).send({ auth: false, msg: 'No user found' });
+    console.log('user not found');
+    return;
+  }
+  await bcrypt.compare(
+    body.password,
+    user.password,
+    (err, isMatch) => {
+      if (err) {
+        res.status(401).send({ auth: false, msg: 'Incorrect password' });
+      } else if (isMatch) {
+        const token = jwt.sign(
+          { id: user.id },
+          'supersecret',
+          { expiresIn: 864000 },
+        );
+        res.status(200).send({ auth: true, token, user });
+      }
+    },
+  );
 });
 
-server.get('/regiset', (req: any, res: any) => {
-  db.insert();
+server.post('/register', jsonParser, async ({ body }: any, res: any) => {
+  console.log(body);
+  const hashedPass = bcrypt.hashSync(body.password, 10);
+  const user = await db.insert<User>(body.name, hashedPass);
+  const token = jwt.sign(
+    { id: user.id },
+    'supersecret',
+    { expiresIn: 864000 },
+  );
+  res.status(200).send({ auth: true, token, user });
 });
 
 server.listen(4000, () => {

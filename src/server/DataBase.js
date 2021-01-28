@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const dotenv = require('dotenv');
-const bcrypt = require('bcrypt');
 const pg = require('pg');
 dotenv.config();
 const isProduction = process.env.NODE_ENV;
@@ -39,14 +38,11 @@ class DataBase {
             return resp.rows[0];
         });
     }
-    insert(name = Date.now().toString(), pass = Date.now().toString()) {
-        const hashedPass = bcrypt.hashSync(pass, 10);
-        const query = `INSERT INTO ${USER_TABLE_NAME} (name, password) VALUES ($1, $2) RETURNING id, name, password;`;
-        pool.query(query, [name, hashedPass], (e, res) => {
-            if (e) {
-                throw e;
-            }
-            console.log(res.rows);
+    insert(name, pass) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = `INSERT INTO ${USER_TABLE_NAME} (name, password) VALUES ($1, $2) RETURNING id, name, password;`;
+            const resp = yield pool.query(query, [name, pass]);
+            return resp.rows[0];
         });
     }
     createUserTable() {

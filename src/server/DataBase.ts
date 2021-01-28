@@ -1,5 +1,4 @@
 const dotenv = require('dotenv');
-const bcrypt = require('bcrypt');
 const pg = require('pg');
 
 dotenv.config();
@@ -34,18 +33,13 @@ class DataBase {
     return resp.rows[0] as T;
   }
 
-  public insert(
-    name: string = Date.now().toString(),
-    pass: string = Date.now().toString(),
-  ): void {
-    const hashedPass = bcrypt.hashSync(pass, 10);
+  public async insert<T>(
+    name: string,
+    pass: string,
+  ): Promise<T> {
     const query = `INSERT INTO ${USER_TABLE_NAME} (name, password) VALUES ($1, $2) RETURNING id, name, password;`;
-    pool.query(query, [name, hashedPass], (e, res) => {
-      if (e) {
-        throw e;
-      }
-      console.log(res.rows);
-    });
+    const resp = await pool.query(query, [name, pass]);
+    return resp.rows[0] as T;
   }
 
   private createUserTable(): void {

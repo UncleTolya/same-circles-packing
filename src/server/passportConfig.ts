@@ -1,7 +1,7 @@
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 
-export interface User {
+interface User {
   id: string;
   name: string;
   password: string;

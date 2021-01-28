@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,39 +8,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-define(["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const LocalStrategy = require('passport-local').Strategy;
-    const bcrypt = require('bcrypt');
-    function initialize(passport, db) {
-        const autheticateUser = (name, password, done) => __awaiter(this, void 0, void 0, function* () {
-            const user = yield db.selectByName(name);
-            if (!user) {
-                return done(null, false, { message: 'User not exists' });
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt');
+function initialize(passport, db) {
+    const autheticateUser = (name, password, done) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield db.selectByName(name);
+        if (!user) {
+            return done(null, false, { message: 'User not exists' });
+        }
+        bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err) {
+                throw err;
             }
-            bcrypt.compare(password, user.password, (err, isMatch) => {
-                if (err) {
-                    throw err;
-                }
-                if (isMatch) {
-                    return done(null, user);
-                }
-                return done(null, false, { message: 'Password is no corrcet' });
-            });
-        });
-        passport.use(new LocalStrategy({
-            usernameField: 'name',
-            passwordField: 'password',
-        }, autheticateUser));
-        passport.serializeUser((user, done) => done(null, user.id));
-        passport.deserializeUser((id, done) => {
-            const user = db.selectById(id);
-            if (!user) {
-                throw new Error();
+            if (isMatch) {
+                return done(null, user);
             }
-            done(null, user);
+            return done(null, false, { message: 'Password is no corrcet' });
         });
-    }
-    module.exports = initialize;
-});
+    });
+    passport.use(new LocalStrategy({
+        usernameField: 'name',
+        passwordField: 'password',
+    }, autheticateUser));
+    passport.serializeUser((user, done) => done(null, user.id));
+    passport.deserializeUser((id, done) => {
+        const user = db.selectById(id);
+        if (!user) {
+            throw new Error();
+        }
+        done(null, user);
+    });
+}
+module.exports = initialize;

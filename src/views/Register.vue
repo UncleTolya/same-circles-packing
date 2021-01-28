@@ -10,9 +10,10 @@
         placeholder="пароль"
       ></AInput>
       <AButton
+        :disabled="name.length < 3 || password.length < 6"
         type="submit"
         @click="handleSubmit"
-      >Войти</AButton>
+      >Регистрация</AButton>
       <div>
         {{ message }}
       </div>
@@ -33,7 +34,7 @@ import Vue from 'vue';
     [Input.name]: Input,
   },
 })
-export default class Login extends Vue {
+export default class Register extends Vue {
   private name = '';
 
   private password = '';
@@ -52,7 +53,7 @@ export default class Login extends Vue {
       token: string;
       auth: boolean;
       msg: string;
-    }>('http://localhost:4000/login', {
+    }>('http://localhost:4000/register', {
       body: {
         name: this.name,
         password: this.password,
