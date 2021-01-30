@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const express = require('express');
 const bodyParser = require('body-parser');
 const DB = require('./DataBase');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const tokenUtils = require('../server/tokenUtils');
 const db = new DB();
 const server = express();
 const jsonParser = bodyParser.json();
@@ -26,29 +26,40 @@ server.use(allowCrossDomain);
 server.get('/', (req, res) => {
     res.send('HELLO!');
 });
+server.post('/checkToken', jsonParser, ({ body }, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { token } = body;
+    if (token) {
+        res.status(200).send(tokenUtils.isValidToken(token));
+        return;
+    }
+    res.status(404).send({ auth: false, msg: 'Пустой токен.' });
+}));
 server.post('/login', jsonParser, ({ body }, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield db.selectByName(body.name);
     if (!user) {
         res.status(404).send({ auth: false, msg: 'No user found' });
-        console.log('user not found');
         return;
     }
     yield bcrypt.compare(body.password, user.password, (err, isMatch) => {
         if (err) {
-            res.status(401).send({ auth: false, msg: 'Incorrect password' });
+            res.status(401).send({ auth: false, msg: 'Неверный пароль.' });
         }
         else if (isMatch) {
-            const token = jwt.sign({ id: user.id }, 'supersecret', { expiresIn: 864000 });
-            res.status(200).send({ auth: true, token, user });
+            const token = tokenUtils.createToken(user.id);
+            res.status(200).send({ auth: true, user, token });
         }
     });
 }));
 server.post('/register', jsonParser, ({ body }, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(body);
-    const hashedPass = bcrypt.hashSync(body.password, 10);
-    const user = yield db.insert(body.name, hashedPass);
-    const token = jwt.sign({ id: user.id }, 'supersecret', { expiresIn: 864000 });
-    res.status(200).send({ auth: true, token, user });
+    const { name, password } = body;
+    const hashedPass = bcrypt.hashSync(password, 10);
+    const userFromBase = yield db.selectByName(name);
+    if (userFromBase) {
+        res.status(401).send({ auth: false, msg: `Пользователь ${name} уже существует.` });
+        return;
+    }
+    yield db.insert(name, hashedPass).catch(console.log);
+    res.status(200).send({ msg: `Пользователь ${name} создан. Перезайдите.` });
 }));
 server.listen(4000, () => {
     console.log('ХЭЛЛОУ МИСТЕР');

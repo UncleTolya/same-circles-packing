@@ -56,7 +56,7 @@ class DataBase {
             if (e) {
                 throw e;
             }
-            console.log(res.rows);
+            console.log(`Table ${USER_TABLE_NAME} was created.`);
         });
     }
 }

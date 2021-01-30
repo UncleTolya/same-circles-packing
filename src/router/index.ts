@@ -1,3 +1,4 @@
+import { store } from '@/store';
 import Register from '@/views/Register.vue';
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
@@ -24,6 +25,9 @@ const routes: Array<RouteConfig> = [
     path: '/register',
     name: 'Register',
     component: Register,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 
@@ -32,18 +36,14 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  const hasJWT = !!localStorage.getItem('jwt');
-  const needAuth = to.meta.requiresAuth;
-  console.log(hasJWT);
-  console.log(needAuth);
-  if (needAuth && !hasJWT) {
-    next({ name: 'Login' });
-  } else if (hasJWT && to.name !== 'Home') {
-    next('/');
-  } else {
-    next();
+router.beforeEach(async (to, from, next) => {
+  await store.dispatch('login');
+
+  const { requiresAuth } = to.meta;
+  if (requiresAuth && !store.state.isLoggedIn) {
+    return next({ name: 'Login' });
   }
+  next();
 });
 
 export default router;

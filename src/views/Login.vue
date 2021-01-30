@@ -14,15 +14,14 @@
         @click="handleSubmit"
       >Войти</AButton>
       <div>
-        {{ message }}
+        {{ store.state.message }}
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { User } from '@/server/server';
-import { fetcher } from '@/utils/fetcher';
+import { store } from '@/store';
 import { Component } from 'vue-property-decorator';
 import { Button, Input } from 'ant-design-vue';
 import Vue from 'vue';
@@ -32,40 +31,25 @@ import Vue from 'vue';
     [Button.name]: Button,
     [Input.name]: Input,
   },
+  data() {
+    return {
+      store,
+    };
+  },
 })
 export default class Login extends Vue {
   private name = '';
 
   private password = '';
 
-  private message = '';
-
   private async handleSubmit(): Promise<void> {
-    this.message = '';
-    const {
-      user,
-      token,
-      auth,
-      msg,
-    } = await fetcher.post<{
-      user: User;
-      token: string;
-      auth: boolean;
-      msg: string;
-    }>('http://localhost:4000/login', {
-      body: {
-        name: this.name,
-        password: this.password,
-      },
+    await store.dispatch('login', {
+      name: this.name,
+      password: this.password,
     });
-    this.message = msg ?? '';
-    if (!auth) {
-      return;
+    if (store.state.isLoggedIn) {
+      await this.$router.push('/');
     }
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('jwt', token);
-    await this.$router.push('/');
-    console.log('Logged in');
   }
 }
 </script>
