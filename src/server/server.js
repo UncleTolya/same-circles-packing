@@ -10,11 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var _a;
 const express = require('express');
 const bodyParser = require('body-parser');
-const DB = require('src/server/DataBase');
+const DB = require('./DataBase');
 const bcrypt = require('bcrypt');
-const tokenUtils = require('src/server/tokenUtils');
+const tokenUtils = require('./tokenUtils');
 const path = require('path');
-const serveStatic = require('serve-static');
 const db = new DB();
 const server = express();
 const jsonParser = bodyParser.json();
@@ -26,7 +25,8 @@ const allowCrossDomain = function (req, res, next) {
     next();
 };
 server.use(allowCrossDomain);
-server.use(serveStatic(__dirname + '/dist'));
+const url = path.join(__dirname, '..', 'build');
+server.use(express.static(url));
 server.get('/', (req, res) => {
     res.send('HELLO!');
 });
