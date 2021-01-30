@@ -7,7 +7,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "postinstall": "if test \"$NODE_ENV\" = \"production\" ; then npm run build ; fi ",
-    "start": "node ./src/server/server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",

@@ -2,11 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const DB = require('./DataBase');
 const bcrypt = require('bcrypt');
-const tokenUtils = require('../server/tokenUtils');
+const tokenUtils = require('./tokenUtils');
 const path = require('path');
 const serveStatic = require('serve-static');
 
-const db: DataBase = new DB();
+const db = new DB();
 
 const server = express();
 const jsonParser = bodyParser.json();
@@ -42,7 +42,7 @@ server.post('/checkToken', jsonParser, async ({ body }: any, res: any) => {
 });
 
 server.post('/login', jsonParser, async ({ body }: any, res: any) => {
-  const user = await db.selectByName<User>(body.name);
+  const user = await db.selectByName(body.name);
   if (!user) {
     res.status(404).send({ auth: false, msg: 'No user found' });
     return;
@@ -64,12 +64,12 @@ server.post('/login', jsonParser, async ({ body }: any, res: any) => {
 server.post('/register', jsonParser, async ({ body }: any, res: any) => {
   const { name, password } = body;
   const hashedPass = bcrypt.hashSync(password, 10);
-  const userFromBase = await db.selectByName<User>(name);
+  const userFromBase = await db.selectByName(name);
   if (userFromBase) {
     res.status(401).send({ auth: false, msg: `Пользователь ${name} уже существует.` });
     return;
   }
-  await db.insert<User>(name, hashedPass).catch(console.log);
+  await db.insert(name, hashedPass).catch(console.log);
   res.status(200).send({ msg: `Пользователь ${name} создан. Перезайдите.` });
 });
 
