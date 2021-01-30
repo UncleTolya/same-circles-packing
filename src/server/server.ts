@@ -74,5 +74,6 @@ server.post('/register', jsonParser, async ({ body }: any, res: any) => {
 });
 
 server.listen(process.env.SERVER_PORT ?? 5000, () => {
-  console.log('ХЭЛЛОУ МИСТЕР');
+  console.log(`Сервер запущен на порту ${process.env.SERVER_PORT ?? 5000}`);
+  console.log(`process ${process}`);
 });
