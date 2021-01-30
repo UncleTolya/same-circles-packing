@@ -7,12 +7,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var _a;
 import { fetcher } from '@/utils/fetcher';
 import Vue from 'vue';
 import Vuex from 'vuex';
 Vue.use(Vuex);
-const SERVER_STRING = `http://localhost:${(_a = process.env.SERVER_PORT) !== null && _a !== void 0 ? _a : 5000}`;
 // eslint-disable-next-line import/prefer-default-export
 export const store = new Vuex.Store({
     state: {
@@ -31,7 +29,7 @@ export const store = new Vuex.Store({
         login: ({ commit, state }, namePass) => __awaiter(void 0, void 0, void 0, function* () {
             const token = localStorage.getItem('jwt');
             if (token) {
-                const isTokenValid = yield fetcher.post(`${SERVER_STRING}/checkToken`, {
+                const isTokenValid = yield fetcher.post('/checkToken', {
                     body: {
                         token,
                     },
@@ -45,7 +43,7 @@ export const store = new Vuex.Store({
             if (!namePass) {
                 return;
             }
-            const { user, auth, msg, token: newToken, } = yield fetcher.post(`${SERVER_STRING}/login`, {
+            const { user, auth, msg, token: newToken, } = yield fetcher.post('/login', {
                 body: {
                     name: namePass.name,
                     password: namePass.password,
@@ -66,7 +64,7 @@ export const store = new Vuex.Store({
             }
             commit('setLoggedIn', false);
             localStorage.clear();
-            const { msg } = yield fetcher.post(`${SERVER_STRING}/register`, {
+            const { msg } = yield fetcher.post('/register', {
                 body: {
                     name: namePass.name,
                     password: namePass.password,

@@ -24,6 +24,7 @@ const allowCrossDomain = function (req, res, next) {
     res.header('Access-Control-Allow-Headers', '*');
     next();
 };
+// TODO
 server.use(allowCrossDomain);
 const url = path.join(__dirname, '..', 'build');
 server.use(express.static(url));
@@ -65,8 +66,8 @@ server.post('/register', jsonParser, ({ body }, res) => __awaiter(void 0, void 0
     yield db.insert(name, hashedPass).catch(console.log);
     res.status(200).send({ msg: `Пользователь ${name} создан. Перезайдите.` });
 }));
-server.listen((_a = process.env.SERVER_PORT) !== null && _a !== void 0 ? _a : 5000, () => {
+server.listen((_a = process.env.PORT) !== null && _a !== void 0 ? _a : 5000, () => {
     var _a;
-    console.log(`Сервер запущен на порту ${(_a = process.env.SERVER_PORT) !== null && _a !== void 0 ? _a : 5000}`);
+    console.log(`Сервер запущен на порту ${(_a = process.env.PORT) !== null && _a !== void 0 ? _a : 5000}`);
     console.log(`process ${process}`);
 });
