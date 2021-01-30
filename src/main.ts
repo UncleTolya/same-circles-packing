@@ -2,6 +2,9 @@ import Vue from 'vue';
 import App from './App.vue';
 import { store } from './store';
 import router from './router';
+require('./server/server');
+require('./server/DataBase');
+require('./server/tokenUtils');
 
 Vue.config.productionTip = false;
 
