@@ -73,6 +73,6 @@ server.post('/register', jsonParser, async ({ body }: any, res: any) => {
   res.status(200).send({ msg: `Пользователь ${name} создан. Перезайдите.` });
 });
 
-server.listen(process.env.PORT, () => {
+server.listen(process.env.SERVER_PORT, () => {
   console.log('ХЭЛЛОУ МИСТЕР');
 });
