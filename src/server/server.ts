@@ -4,7 +4,6 @@ const DB = require('./DataBase');
 const bcrypt = require('bcrypt');
 const tokenUtils = require('./tokenUtils');
 const path = require('path');
-const serveStatic = require('serve-static');
 
 const db = new DB();
 
@@ -26,7 +25,7 @@ const allowCrossDomain = function (req, res, next) {
 };
 
 server.use(allowCrossDomain);
-server.use(serveStatic(__dirname + '/dist'));
+server.use(express.static(__dirname, '..', 'dist'));
 
 server.get('/', (req: any, res: any) => {
   res.send('HELLO!');

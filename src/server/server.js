@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var _a;
 const express = require('express');
 const bodyParser = require('body-parser');
-const DB = require('./DataBase');
+const DB = require('src/server/DataBase');
 const bcrypt = require('bcrypt');
-const tokenUtils = require('./tokenUtils');
+const tokenUtils = require('src/server/tokenUtils');
 const path = require('path');
 const serveStatic = require('serve-static');
 const db = new DB();

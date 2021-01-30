@@ -1,4 +1,4 @@
-import { User } from '../../server';
+import { User } from '../server/server';
 import { fetcher } from '@/utils/fetcher';
 import Vue from 'vue';
 import Vuex from 'vuex';
