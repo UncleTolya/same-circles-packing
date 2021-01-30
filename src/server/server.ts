@@ -24,6 +24,7 @@ const allowCrossDomain = function (req, res, next) {
   next();
 };
 
+// TODO
 server.use(allowCrossDomain);
 const url = path.join(__dirname, '..', 'build');
 server.use(express.static(url));
