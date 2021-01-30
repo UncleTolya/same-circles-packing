@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const DB = require('./DataBase');
 const bcrypt = require('bcrypt');
 const tokenUtils = require('../server/tokenUtils');
+const path = require('path');
+const serveStatic = require('serve-static');
 
 const db: DataBase = new DB();
 
@@ -24,6 +26,7 @@ const allowCrossDomain = function (req, res, next) {
 };
 
 server.use(allowCrossDomain);
+server.use(serveStatic(__dirname + '/dist'));
 
 server.get('/', (req: any, res: any) => {
   res.send('HELLO!');
@@ -70,6 +73,6 @@ server.post('/register', jsonParser, async ({ body }: any, res: any) => {
   res.status(200).send({ msg: `Пользователь ${name} создан. Перезайдите.` });
 });
 
-server.listen(4000, () => {
+server.listen(process.env.PORT, () => {
   console.log('ХЭЛЛОУ МИСТЕР');
 });

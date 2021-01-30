@@ -23,6 +23,7 @@
     ],
     "baseUrl": ".",
     "types": [
+      "node",
       "webpack-env"
     ],
     "paths": {

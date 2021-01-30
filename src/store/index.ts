@@ -10,8 +10,7 @@ interface StoreState {
   isLoggedIn: boolean;
 }
 
-const SERVER_PORT = 4000;
-const SERVER_STRING = `http://localhost:${SERVER_PORT}`;
+const SERVER_STRING = `http://localhost:${process.env.PORT}`;
 
 // eslint-disable-next-line import/prefer-default-export
 export const store = new Vuex.Store<StoreState>({
