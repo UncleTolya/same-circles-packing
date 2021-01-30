@@ -7,12 +7,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var _a;
 import { fetcher } from '@/utils/fetcher';
 import Vue from 'vue';
 import Vuex from 'vuex';
 Vue.use(Vuex);
-const SERVER_PORT = 4000;
-const SERVER_STRING = `http://localhost:${SERVER_PORT}`;
+const SERVER_STRING = `http://localhost:${(_a = process.env.SERVER_PORT) !== null && _a !== void 0 ? _a : 5000}`;
 // eslint-disable-next-line import/prefer-default-export
 export const store = new Vuex.Store({
     state: {
