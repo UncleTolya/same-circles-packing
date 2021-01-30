@@ -74,7 +74,7 @@ server.post('/register', jsonParser, async ({ body }: any, res: any) => {
   res.status(200).send({ msg: `Пользователь ${name} создан. Перезайдите.` });
 });
 
-server.listen(process.env.SERVER_PORT ?? 5000, () => {
-  console.log(`Сервер запущен на порту ${process.env.SERVER_PORT ?? 5000}`);
+server.listen(process.env.PORT ?? 5000, () => {
+  console.log(`Сервер запущен на порту ${process.env.PORT ?? 5000}`);
   console.log(`process ${process}`);
 });

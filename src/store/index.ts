@@ -1,7 +1,7 @@
-import { User } from '../server/server';
 import { fetcher } from '@/utils/fetcher';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { User } from '../server/server';
 
 Vue.use(Vuex);
 
@@ -9,8 +9,6 @@ interface StoreState {
   message: string;
   isLoggedIn: boolean;
 }
-
-const SERVER_STRING = `http://localhost:${process.env.SERVER_PORT ?? 5000}`;
 
 // eslint-disable-next-line import/prefer-default-export
 export const store = new Vuex.Store<StoreState>({
@@ -30,7 +28,7 @@ export const store = new Vuex.Store<StoreState>({
     login: async ({ commit, state }, namePass?) => {
       const token = localStorage.getItem('jwt');
       if (token) {
-        const isTokenValid = await fetcher.post<boolean>(`${SERVER_STRING}/checkToken`, {
+        const isTokenValid = await fetcher.post<boolean>('/checkToken', {
           body: {
             token,
           },
@@ -54,7 +52,7 @@ export const store = new Vuex.Store<StoreState>({
         auth: boolean;
         msg: string;
         token: string;
-      }>(`${SERVER_STRING}/login`, {
+      }>('/login', {
         body: {
           name: namePass.name,
           password: namePass.password,
@@ -76,7 +74,7 @@ export const store = new Vuex.Store<StoreState>({
       commit('setLoggedIn', false);
       localStorage.clear();
       const { msg } = await fetcher.post<{ msg: string; auth }>(
-        `${SERVER_STRING}/register`,
+        '/register',
         {
           body: {
             name: namePass.name,
