@@ -4,8 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "postinstall": "tsc",
-    "start": "node server.js"
+    "postinstall": "npm install && tsc"
   },
   "dependencies": {
     "dotenv": "8.2.0",
