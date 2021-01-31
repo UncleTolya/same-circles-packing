@@ -14,7 +14,7 @@ interface StoreState {
 export const store = new Vuex.Store<StoreState>({
   state: {
     message: '',
-    isLoggedIn: true,
+    isLoggedIn: false,
   },
   mutations: {
     setMessage: (state, message: string) => {
