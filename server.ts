@@ -58,12 +58,13 @@ server.post('/login', jsonParser, async ({ body }: any, res: any) => {
   }
   const bodyPass = body.password;
   const userPassCrypt = user.password;
-  if (bcrypt.compareSync(bodyPass, userPassCrypt)) {
-    const token = tokenUtils.createToken(user.id);
-    res.status(200).send({ auth: true, user, token });
-  } else {
-    res.status(401).send({ auth: false, msg: `Неверный пароль. ${bodyPass}; ${userPassCrypt}; ${bcrypt.hashSync(bodyPass)}` });
-  }
+  res.status(401).send({ auth: false, msg: `Неверный пароль. ${bodyPass}; ${userPassCrypt}; ${bcrypt.hashSync(bodyPass)}` });
+  // if (bcrypt.compareSync(bodyPass, userPassCrypt)) {
+  //   const token = tokenUtils.createToken(user.id);
+  //   res.status(200).send({ auth: true, user, token });
+  // } else {
+  //   res.status(401).send({ auth: false, msg: `Неверный пароль. ${bodyPass}; ${userPassCrypt}; ${bcrypt.hashSync(bodyPass)}` });
+  // }
 });
 
 server.post('/register', jsonParser, async ({ body }: any, res: any) => {
