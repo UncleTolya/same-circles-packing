@@ -2,7 +2,7 @@
   <div style="display: flex; flex-direction: column">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <div style="margin-left: 1rem; color: #0a63ae; font-size: 1.8rem">
-        Конфигуратор формы батареи электровелосипеда
+        Конфигуратор формы батареи
       </div>
       <div style="display: flex; flex-direction: row-reverse">
         <img alt="radio-technika.ru" :src="logo" style="height: 8rem">
