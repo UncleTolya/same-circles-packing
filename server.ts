@@ -58,18 +58,18 @@ server.post('/login', jsonParser, async ({ body }: any, res: any) => {
   }
   const bodyPass = body.password;
   const userPassCrypt = user.password;
-  res.status(401).send({ auth: false, msg: `Неверный пароль. ${bodyPass}; ${userPassCrypt}; ${bcrypt.hashSync(bodyPass, 10)}` });
-  // if (bcrypt.compareSync(bodyPass, userPassCrypt)) {
-  //   const token = tokenUtils.createToken(user.id);
-  //   res.status(200).send({ auth: true, user, token });
-  // } else {
-  //   res.status(401).send({ auth: false, msg: `Неверный пароль. ${bodyPass}; ${userPassCrypt}; ${bcrypt.hashSync(bodyPass)}` });
-  // }
+  res.status(401).send({ auth: false, msg: `Неверный пароль. ${bodyPass}; ${userPassCrypt}; ${await bcrypt.hash(bodyPass, 10)}` });
+  if (await bcrypt.compare(bodyPass, userPassCrypt)) {
+    const token = tokenUtils.createToken(user.id);
+    res.status(200).send({ auth: true, user, token });
+  } else {
+    res.status(401).send({ auth: false, msg: `Неверный пароль. ${bodyPass}; ${userPassCrypt}; ${await bcrypt.hash(bodyPass, 10)}` });
+  }
 });
 
 server.post('/register', jsonParser, async ({ body }: any, res: any) => {
   const { name, password } = body;
-  const hashedPass = bcrypt.hashSync(password, 10);
+  const hashedPass = await bcrypt.hash(password, 10);
   const userFromBase = await db.selectByName(name);
   if (userFromBase) {
     res.status(401).send({ auth: false, msg: `Пользователь ${name} уже существует.` });
