@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <img alt="radio-technika.ru" :src="logo">
     <CanvasArea msg="Welcome to Your Vue.js Ap"/>
   </div>
 </template>
@@ -12,6 +13,11 @@ export default {
   name: 'Home',
   components: {
     CanvasArea,
+  },
+  data() {
+    return {
+      logo: require('@/assets/logo.svg'),
+    };
   },
 };
 </script>

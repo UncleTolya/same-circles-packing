@@ -1,6 +1,7 @@
 <template>
   <div style="display: flex; flex-direction: row-reverse">
     <div style="display: flex; flex-direction: column">
+      <img alt="radio-technika.ru" :src="logo">
       <AInput
         v-model="name"
         placeholder="имя"
@@ -34,6 +35,7 @@ import Vue from 'vue';
   data() {
     return {
       store,
+      logo: require('@/assets/logo.svg'),
     };
   },
 })
