@@ -59,6 +59,7 @@ class DataBase {
     );`;
     pool.query(query, (e, res) => {
       if (e) {
+        console.log(connectionString);
         throw e;
       }
       console.log(`Table ${USER_TABLE_NAME} was created.`);
