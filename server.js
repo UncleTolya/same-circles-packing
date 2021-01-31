@@ -25,16 +25,15 @@ const allowCrossDomain = function (req, res, next) {
     res.header('Access-Control-Allow-Headers', '*');
     next();
 };
-// TODO
 server.use(allowCrossDomain);
 const url = path.join(__dirname, 'dist');
 //we are configuring dist to serve site files
-server.use('/', serveStatic(path.join(__dirname, '/dist')));
-// this * route is to serve project on different page routes except root `/`
-server.get(/.*/, function (req, res) {
-    res.sendFile(path.join(__dirname, '/dist/index.html'));
-});
-// server.use(express.static(url));
+// server.use('/', serveStatic(path.join(__dirname, '/dist')));
+// // this * route is to serve project on different page routes except root `/`
+// server.get(/.*/, function (req, res) {
+//   res.sendFile(path.join(__dirname, '/dist/index.html'));
+// });
+server.use(express.static(url));
 server.get('/', (req, res) => {
     res.send('HELLO!');
 });
@@ -52,20 +51,19 @@ server.post('/login', jsonParser, ({ body }, res) => __awaiter(void 0, void 0, v
         res.status(404).send({ auth: false, msg: 'No user found' });
         return;
     }
-    res.status(200).send({ auth: true, token: '500' });
-    yield bcrypt.compare(body.password, user.password, (err, isMatch) => {
-        if (err) {
-            res.status(401).send({ auth: false, msg: 'Неверный пароль.' });
-        }
-        else if (isMatch) {
-            const token = tokenUtils.createToken(user.id);
-            res.status(200).send({ auth: true, user, token });
-        }
-    });
+    const bodyPass = body.password;
+    const userPassCrypt = user.password;
+    if (yield bcrypt.compare(bodyPass, userPassCrypt)) {
+        const token = tokenUtils.createToken(user.id);
+        res.status(200).send({ auth: true, user, token });
+    }
+    else {
+        res.status(401).send({ auth: false, msg: `Неверный пароль. ${bodyPass}; ${userPassCrypt}; ${yield bcrypt.hash(bodyPass, 10)}` });
+    }
 }));
 server.post('/register', jsonParser, ({ body }, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, password } = body;
-    const hashedPass = bcrypt.hashSync(password, 10);
+    const hashedPass = yield bcrypt.hash(password, 10);
     const userFromBase = yield db.selectByName(name);
     if (userFromBase) {
         res.status(401).send({ auth: false, msg: `Пользователь ${name} уже существует.` });
