@@ -534,3 +534,14 @@ export default class CanvasArea extends Vue {
   }
 }
 </script>
+<style>
+  .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    background-color: rgb(10, 99, 174);
+    border-color: rgb(10, 99, 174);
+  }
+
+  .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+    background-color: rgba(10, 99, 174, 0.65);
+    border-color: rgba(10, 99, 174, 0.65);
+  }
+</style>
