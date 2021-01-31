@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="width: 100%; display: flex; padding: 1rem">
+    <div style="width: 100%; display: flex; padding: 1rem; align-items: flex-start;">
       <div style="
         width: 300px;
         display: flex;
