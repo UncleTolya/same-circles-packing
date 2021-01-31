@@ -56,18 +56,12 @@ server.post('/login', jsonParser, async ({ body }: any, res: any) => {
     res.status(404).send({ auth: false, msg: 'No user found' });
     return;
   }
-  await bcrypt.compare(
-    body.password,
-    user.password,
-    (err, isMatch) => {
-      if (err) {
-        res.status(401).send({ auth: false, msg: 'Неверный пароль.' });
-      } else if (isMatch) {
-        const token = tokenUtils.createToken(user.id);
-        res.status(200).send({ auth: true, user, token });
-      }
-    },
-  );
+  if (bcrypt.compareSync(body.password, user.password)) {
+    const token = tokenUtils.createToken(user.id);
+    res.status(200).send({ auth: true, user, token });
+  } else {
+    res.status(401).send({ auth: false, msg: `Неверный пароль. ${bcrypt};; ${tokenUtils?.createToken}` });
+  }
 });
 
 server.post('/register', jsonParser, async ({ body }: any, res: any) => {
