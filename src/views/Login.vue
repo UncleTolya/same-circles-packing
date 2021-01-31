@@ -1,21 +1,27 @@
 <template>
-  <div style="display: flex; flex-direction: row-reverse">
-    <div style="display: flex; flex-direction: column">
-      <img alt="radio-technika.ru" :src="logo">
-      <AInput
-        v-model="name"
-        placeholder="имя"
-      ></AInput>
-      <AInput
-        v-model="password"
-        placeholder="пароль"
-      ></AInput>
-      <AButton
-        type="submit"
-        @click="handleSubmit"
-      >Войти</AButton>
-      <div>
-        {{ store.state.message }}
+  <div style="display: flex; flex-direction: column">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <div style="display: flex; flex-direction: column; margin-left: 1rem">
+        <AInput
+          v-model="name"
+          placeholder="имя"
+          style="margin-bottom: .5rem"
+        ></AInput>
+        <AInputPassword
+          v-model="password"
+          placeholder="пароль"
+          style="margin-bottom: .5rem"
+        ></AInputPassword>
+        <AButton
+          type="submit"
+          @click="handleSubmit"
+        >Войти</AButton>
+        <div>
+          {{ store.state.message }}
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: row-reverse">
+        <img alt="radio-technika.ru" :src="logo" style="height: 8rem">
       </div>
     </div>
   </div>
@@ -31,11 +37,12 @@ import Vue from 'vue';
   components: {
     [Button.name]: Button,
     [Input.name]: Input,
+    [Input.Password.name]: Input.Password,
   },
   data() {
     return {
       store,
-      logo: require('@/assets/logo.svg'),
+      logo: require('@/assets/logo.png'),
     };
   },
 })

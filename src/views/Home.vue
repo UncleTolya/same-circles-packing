@@ -1,7 +1,14 @@
 <template>
-  <div class="home">
-    <img alt="radio-technika.ru" :src="logo">
-    <CanvasArea msg="Welcome to Your Vue.js Ap"/>
+  <div style="display: flex; flex-direction: column">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="margin-left: 1rem; color: #0a63ae; font-size: 1.8rem">
+        Конфигуратор формы батареи электровелосипеда
+      </div>
+      <div style="display: flex; flex-direction: row-reverse">
+        <img alt="radio-technika.ru" :src="logo" style="height: 8rem">
+      </div>
+    </div>
+    <CanvasArea/>
   </div>
 </template>
 
@@ -16,7 +23,7 @@ export default {
   },
   data() {
     return {
-      logo: require('@/assets/logo.svg'),
+      logo: require('@/assets/logo.png'),
     };
   },
 };

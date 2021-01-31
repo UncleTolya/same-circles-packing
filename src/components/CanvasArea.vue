@@ -8,9 +8,6 @@
         justify-content: flex-start;
         padding: 1rem;
       ">
-        <div style="margin-bottom: 3rem; font-size: 1.5rem">
-          Расчет формы батареи
-        </div>
         <div style="
           display: flex;
           flex-direction: column;
@@ -336,7 +333,7 @@ export default class CanvasArea extends Vue {
   private minS = 1;
   private maxS = 100;
 
-  private p = 150;
+  private p = 37;
   private minP = 0;
   private maxP = 1000;
 
@@ -418,7 +415,7 @@ export default class CanvasArea extends Vue {
       : 'black';
     const elementFillColor = fittedCentres.length < totalElementCount
       ? 'white'
-      : 'green';
+      : '#0a63ae';
     drawer.draw(shell, { strokeColor: areaStrokeColor });
     drawer.drawSizes(shell, Math.cos(45));
     if (hasOffset && area.isExists()) {

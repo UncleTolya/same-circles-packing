@@ -2,8 +2,8 @@ import { Area } from '@/components/Area/Area';
 import { CircleArea } from '@/components/Area/CircleArea';
 import { RectangleArea } from '@/components/Area/RectangleArea';
 
-export const CANVAS_WIDTH = 1200;
-export const CANVAS_HEIGHT = 800;
+export const CANVAS_WIDTH = 1000;
+export const CANVAS_HEIGHT = 600;
 
 export const RULER_WIDTH = 30;
 export const WORKSPACE_WIDTH = CANVAS_WIDTH - RULER_WIDTH;
@@ -78,7 +78,7 @@ export class Drawer {
     options?: DrawOptions,
   ): void {
     const opt = {
-      fillColor: 'green',
+      fillColor: '#0a63ae',
       strokeColor: 'grey',
       ...options ?? {},
     };
