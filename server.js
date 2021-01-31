@@ -13,6 +13,7 @@ const bodyParser = require('body-parser');
 const DB = require('./DataBase');
 const bcrypt = require('bcrypt');
 const tokenUtils = require('./tokenUtils');
+const serveStatic = require('serve-static');
 const path = require('path');
 const db = new DB();
 const server = express();
@@ -26,8 +27,14 @@ const allowCrossDomain = function (req, res, next) {
 };
 // TODO
 server.use(allowCrossDomain);
-const url = path.join(__dirname, '..', 'build');
-server.use(express.static(url));
+const url = path.join(__dirname, 'dist');
+//we are configuring dist to serve site files
+server.use('/', serveStatic(path.join(__dirname, '/dist')));
+// this * route is to serve project on different page routes except root `/`
+server.get(/.*/, function (req, res) {
+    res.sendFile(path.join(__dirname, '/dist/index.html'));
+});
+// server.use(express.static(url));
 server.get('/', (req, res) => {
     res.send('HELLO!');
 });

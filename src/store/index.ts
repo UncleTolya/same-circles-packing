@@ -1,7 +1,7 @@
 import { fetcher } from '@/utils/fetcher';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { User } from '../server/server';
+import { User } from '../../server';
 
 Vue.use(Vuex);
 

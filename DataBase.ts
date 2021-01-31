@@ -9,9 +9,7 @@ const isProduction = process.env.NODE_ENV;
 const connectionString = process.env.DATABASE_URL;
 
 const pool = new pg.Pool({
-  connectionString: isProduction
-    ? process.env.DATABASE_URL
-    : connectionString,
+  connectionString,
 });
 
 // const pool = new pg.Client({
