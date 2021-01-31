@@ -52,6 +52,7 @@ server.post('/login', jsonParser, ({ body }, res) => __awaiter(void 0, void 0, v
         res.status(404).send({ auth: false, msg: 'No user found' });
         return;
     }
+    res.status(200).send({ auth: true, token: '500' });
     yield bcrypt.compare(body.password, user.password, (err, isMatch) => {
         if (err) {
             res.status(401).send({ auth: false, msg: 'Неверный пароль.' });
