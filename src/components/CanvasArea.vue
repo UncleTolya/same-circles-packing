@@ -7,6 +7,7 @@
         flex-direction: column;
         justify-content: flex-start;
         padding: 1rem;
+        font-size: .9rem;
       ">
         <div style="
           display: flex;
@@ -16,7 +17,7 @@
         ">
           <div style="display: flex; flex-direction: column">
             <div style="display: flex; justify-content: space-between">
-              <div>Радиус элемента: </div>
+              <div>Радиус элемента, мм: </div>
               <AInputNumber
                 :min="minRadius"
                 :max="maxRadius"
@@ -65,10 +66,23 @@
               />
             </div>
           </div>
+          <div style="margin-bottom: 1rem">
+            <div v-if="areElementsFit">
+              Помещается: {{ fittedCentres.length }} элементов
+            </div>
+            <div v-else style="color: #df676f; display: flex; flex-direction: column">
+              <div>
+                Помещается:
+              </div>
+              <div>
+                {{ fittedCentres.length }} элементов из {{ totalElementCount }}
+              </div>
+          </div>
+          </div>
           <div style="display: flex; flex-direction: column">
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
-                <div>Вес элемента: </div>
+                <div>Вес элемента, г: </div>
                 <AInputNumber
                   :min="minW"
                   :max="maxW"
@@ -83,6 +97,9 @@
               />
             </div>
           </div>
+          <div>
+            Итоговый вес элементов: {{ fittedCentres.length * w }} г
+          </div>
         </div>
         <div style="
           display: flex;
@@ -93,7 +110,7 @@
             :value="areaType"
             buttonStyle="solid"
             size="small"
-            style="display: flex; margin-bottom: 1rem"
+            style="display: flex; margin-bottom: 1rem; font-size: .7rem"
           >
             <ARadioButton
               :key="AreaType.CIRCLE"
@@ -111,7 +128,7 @@
               @click="areaType = AreaType.RECTANGLE"
             >
               <AIcon type="square"></AIcon>
-              Прямоугольник
+              Прямуг-ик
             </ARadioButton>
           </ARadioGroup>
           <div
@@ -119,7 +136,7 @@
             style="display: flex; flex-direction: column"
           >
             <div style="display: flex; justify-content: space-between">
-              <div>Радиус: </div>
+              <div>Радиус, мм: </div>
               <AInputNumber
                 :min="radius"
                 :max="Math.floor(maxHeight / 2 - 2)"
@@ -138,7 +155,7 @@
             style="display: flex; flex-direction: column"
           >
             <div style="display: flex; justify-content: space-between">
-              <div>Ширина: </div>
+              <div>Ширина, мм: </div>
               <AInputNumber
                 :min="minWidth"
                 :max="maxWidth"
@@ -157,7 +174,7 @@
             style="display: flex; flex-direction: column"
           >
             <div style="display: flex; justify-content: space-between">
-              <div>Высота: </div>
+              <div>Высота, мм: </div>
               <AInputNumber
                 :min="minHeight"
                 :max="maxHeight"
@@ -177,7 +194,7 @@
           >
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
-                <div>Отступ: </div>
+                <div>Отступ, мм: </div>
                 <AInputNumber
                   :min="minOffset"
                   :max="maxRadiusOffset"
@@ -198,7 +215,7 @@
           >
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
-                <div>Отступ высота: </div>
+                <div>Отступ высота, мм: </div>
                 <AInputNumber
                   :min="minOffset"
                   :max="maxHeightOffset"
@@ -224,7 +241,7 @@
           >
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
-                <div>Отступ ширина: </div>
+                <div>Отступ ширина, мм: </div>
                 <AInputNumber
                   v-if="!linkOffsets"
                   :min="minOffset"
@@ -399,28 +416,28 @@ export default class CanvasArea extends Vue {
       area,
       shell,
       drawer,
-      totalElementCount,
       fittedCentres,
       areaType,
       radiusOffset,
       widthOffset,
+      areElementsFit,
       heightOffset,
     } = this;
     drawer.resetCanvas();
     const hasOffset = areaType === AreaType.CIRCLE
       ? radiusOffset
       : widthOffset || heightOffset;
-    const areaStrokeColor = fittedCentres.length < totalElementCount
+    const areaStrokeColor = !areElementsFit
       ? 'rgba(211, 33, 45, 0.5)'
       : 'black';
-    const elementFillColor = fittedCentres.length < totalElementCount
+    const elementFillColor = !areElementsFit
       ? 'white'
       : '#0a63ae';
     drawer.draw(shell, { strokeColor: areaStrokeColor });
     drawer.drawSizes(shell, Math.cos(45));
     if (hasOffset && area.isExists()) {
       drawer.draw(area, {
-        strokeColor: fittedCentres.length < totalElementCount
+        strokeColor: !areElementsFit
           ? 'rgba(211, 33, 45, 0.5)'
           : 'black',
         thickness: undefined,
@@ -460,6 +477,10 @@ export default class CanvasArea extends Vue {
     return this.areaType === AreaType.RECTANGLE
       ? this.rectangleShell
       : this.circleShell;
+  }
+
+  private get areElementsFit(): boolean {
+    return this.totalElementCount <= this.fittedCentres.length;
   }
 
   private get totalElementCount(): number {
@@ -535,6 +556,7 @@ export default class CanvasArea extends Vue {
 }
 </script>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap');
   .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
     background-color: rgb(10, 99, 174);
     border-color: rgb(10, 99, 174);
@@ -543,5 +565,18 @@ export default class CanvasArea extends Vue {
   .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
     background-color: rgba(10, 99, 174, 0.65);
     border-color: rgba(10, 99, 174, 0.65);
+  }
+
+  .ant-checkbox-checked .ant-checkbox-inner {
+    background-color: rgb(10, 99, 174);
+    border-color: rgb(10, 99, 174);
+  }
+
+  .ant-slider-track {
+    background-color: rgb(10, 99, 174);
+  }
+
+  .ant-slider-handle {
+    border-color: rgb(10, 99, 174);
   }
 </style>
