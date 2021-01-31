@@ -15,7 +15,7 @@
           justify-content: space-between;
           margin-bottom: 3rem;
         ">
-          <div style="display: flex; flex-direction: column">
+          <div style="display: flex; flex-direction: column; position: relative;">
             <div style="display: flex; justify-content: space-between">
               <div>Радиус элемента, мм: </div>
               <AInputNumber
@@ -32,7 +32,15 @@
             />
 
           </div>
-          <div style="display: flex; flex-direction: column">
+          <div style="display: flex; flex-direction: column; position: relative;">
+            <div style="position: absolute; top: 0; left: -1.5rem">
+              <ATooltip placement="topLeft" v-model="isSTooltipVisible">
+                <template #title>
+                  <span> Количество последовательно соединенных блоков батареи . При этом типе соединения напряжение всех последовательно соединенных  элементов складывается. Это позволяет сделать батарею на заданное напряжение  U=S*Uэлемента.</span>
+                </template>
+                <AIcon type="question-circle"/>
+              </ATooltip>
+            </div>
             <div style="display: flex; justify-content: space-between">
               <div>Длина серии (S): </div>
               <AInputNumber
@@ -48,7 +56,15 @@
               v-model="s"
             />
           </div>
-          <div style="display: flex; flex-direction: column">
+          <div style="display: flex; flex-direction: column; position: relative;">
+            <div style="position: absolute; top: 0; left: -1.5rem">
+              <ATooltip placement="topLeft" v-model="isPTooltipVisible">
+                <template #title>
+                  <span>Количество параллельно соединенных элементов. При этом типе соединения ёмкость сборки пропорционально увеличивается.</span>
+                </template>
+                <AIcon type="question-circle"/>
+              </ATooltip>
+            </div>
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
                 <div>Кол-во параллелей (P): </div>
@@ -79,7 +95,7 @@
               </div>
           </div>
           </div>
-          <div style="display: flex; flex-direction: column">
+          <div style="display: flex; flex-direction: column; position: relative;">
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
                 <div>Вес элемента, г: </div>
@@ -106,31 +122,41 @@
           flex-direction: column;
           justify-content: space-between;
         ">
-          <ARadioGroup
-            :value="areaType"
-            buttonStyle="solid"
-            size="small"
-            style="display: flex; margin-bottom: 1rem; font-size: .7rem"
-          >
-            <ARadioButton
-              :key="AreaType.CIRCLE"
-              style="flex: 1"
-              :value="AreaType.CIRCLE"
-              @click="areaType = AreaType.CIRCLE"
+          <div style="position: relative;">
+            <div style="position: absolute; top: 0; left: -1.5rem">
+              <ATooltip placement="topLeft" v-model="isFormTooltipVisible">
+                <template #title>
+                  <span>Форма корпуса</span>
+                </template>
+                <AIcon type="question-circle"/>
+              </ATooltip>
+            </div>
+            <ARadioGroup
+              :value="areaType"
+              buttonStyle="solid"
+              size="small"
+              style="display: flex; margin-bottom: 1rem; font-size: .7rem"
             >
-              <AIcon type="circle"></AIcon>
-              Круг
-            </ARadioButton>
-            <ARadioButton
-              :key="AreaType.RECTANGLE"
-              style="flex: 1"
-              :value="AreaType.RECTANGLE"
-              @click="areaType = AreaType.RECTANGLE"
-            >
-              <AIcon type="square"></AIcon>
-              Прямуг-ик
-            </ARadioButton>
-          </ARadioGroup>
+              <ARadioButton
+                :key="AreaType.CIRCLE"
+                style="flex: 1"
+                :value="AreaType.CIRCLE"
+                @click="areaType = AreaType.CIRCLE"
+              >
+                <AIcon type="circle"></AIcon>
+                Круг
+              </ARadioButton>
+              <ARadioButton
+                :key="AreaType.RECTANGLE"
+                style="flex: 1"
+                :value="AreaType.RECTANGLE"
+                @click="areaType = AreaType.RECTANGLE"
+              >
+                <AIcon type="square"></AIcon>
+                Прямуг-ик
+              </ARadioButton>
+            </ARadioGroup>
+          </div>
           <div
             v-if="areaType === AreaType.CIRCLE"
             style="display: flex; flex-direction: column"
@@ -230,11 +256,20 @@
               />
             </div>
           </div>
-          <ACheckbox
-            v-if="areaType === AreaType.RECTANGLE"
-            :checked="linkOffsets"
-            @change="({ target }) => linkOffsets = target.checked"
-          ></ACheckbox>
+          <div v-if="areaType === AreaType.RECTANGLE" style="display: flex; justify-content: center">
+            <div style="margin-right: .5rem">
+              <ATooltip placement="topLeft" v-model="isLinkTooltipVisible">
+                <template #title>
+                  <span>Синхронизировать размер отступов</span>
+                </template>
+                <AIcon type="question-circle"/>
+              </ATooltip>
+            </div>
+            <ACheckbox
+              :checked="linkOffsets"
+              @change="({ target }) => linkOffsets = target.checked"
+            ></ACheckbox>
+          </div>
           <div
             v-if="areaType === AreaType.RECTANGLE"
             style="display: flex; flex-direction: column"
@@ -292,7 +327,9 @@ import {
   Slider,
   Dropdown,
   Radio,
-  Icon, Checkbox,
+  Icon,
+  Tooltip,
+  Checkbox,
 } from 'ant-design-vue';
 import Vue from 'vue';
 import 'ant-design-vue/dist/antd.css';
@@ -315,6 +352,7 @@ enum AreaType {
     [Radio.Button.name]: Radio.Button,
     [Radio.Group.name]: Radio.Group,
     [Checkbox.name]: Checkbox,
+    [Tooltip.name]: Tooltip,
   },
   data() {
     return {
@@ -327,6 +365,11 @@ enum AreaType {
   },
 })
 export default class CanvasArea extends Vue {
+  private isSTooltipVisible = false;
+  private isPTooltipVisible = false;
+  private isFormTooltipVisible = false;
+  private isLinkTooltipVisible = false;
+
   private widthOffset = 0;
   private heightOffset = 0;
   private radiusOffset = 0;
