@@ -56,6 +56,7 @@ server.post('/login', jsonParser, async ({ body }: any, res: any) => {
     res.status(404).send({ auth: false, msg: 'No user found' });
     return;
   }
+  res.status(200).send({ auth: true, token: '500' });
   await bcrypt.compare(
     body.password,
     user.password,
