@@ -1,16 +1,18 @@
 <template>
-  <div style="display: flex; flex-direction: column">
-    <div style="display: flex; justify-content: space-between; align-items: center">
-      <div style="display: flex; flex-direction: column; margin-left: 1rem">
+  <div style="display: flex; flex-direction: column; align-items: center">
+    <div>
+      <img alt="radio-technika.ru" :src="logo" style="height: 8rem">
+    </div>
+    <div style="display: flex; flex-direction: column; margin-top: 8rem">
         <AInput
           v-model="name"
           placeholder="имя"
-          style="margin-bottom: .5rem"
+          style="margin-bottom: 1rem"
         ></AInput>
         <AInputPassword
           v-model="password"
           placeholder="пароль"
-          style="margin-bottom: .5rem"
+          style="margin-bottom: 1rem"
         ></AInputPassword>
         <AButton
           type="submit"
@@ -20,10 +22,6 @@
           {{ store.state.message }}
         </div>
       </div>
-      <div style="display: flex; flex-direction: row-reverse">
-        <img alt="radio-technika.ru" :src="logo" style="height: 8rem">
-      </div>
-    </div>
   </div>
 </template>
 

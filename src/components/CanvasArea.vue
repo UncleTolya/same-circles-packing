@@ -499,15 +499,6 @@ export default class CanvasArea extends Vue {
         },
       );
     });
-    const lastElement = fittedCentres[fittedCentres.length - 1];
-    drawer.drawCircleSizes(
-      {
-        x: lastElement[0],
-        y: lastElement[1],
-        r: radius,
-      },
-      -Math.cos(60),
-    );
   }
 
   private get area(): Area {
