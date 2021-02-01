@@ -17,18 +17,18 @@
         ">
           <div style="display: flex; flex-direction: column; position: relative;">
             <div style="display: flex; justify-content: space-between">
-              <div>Радиус элемента, мм: </div>
+              <div>Диаметр элемента, мм: </div>
               <AInputNumber
-                :min="minRadius"
-                :max="maxRadius"
+                :min="minDiam"
+                :max="maxDiam"
                 size="small"
-                v-model="radius"
+                v-model="diam"
               />
             </div>
             <ASlider
-              :min="minRadius"
-              :max="maxRadius"
-              v-model="radius"
+              :min="minDiam"
+              :max="maxDiam"
+              v-model="diam"
             />
 
           </div>
@@ -162,18 +162,18 @@
             style="display: flex; flex-direction: column"
           >
             <div style="display: flex; justify-content: space-between">
-              <div>Радиус, мм: </div>
+              <div>Диаметр, мм: </div>
               <AInputNumber
-                :min="radius"
-                :max="Math.floor(maxHeight / 2 - 2)"
+                :min="diam"
+                :max="Math.floor(maxHeight - 2)"
                 size="small"
-                v-model="areaRadius"
+                v-model="areaDiam"
               />
             </div>
             <ASlider
-              :min="radius"
-              :max="Math.floor(maxHeight / 2 - 2)"
-              v-model="areaRadius"
+              :min="diam"
+              :max="Math.floor(maxHeight - 2)"
+              v-model="areaDiam"
             />
           </div>
           <div
@@ -223,15 +223,15 @@
                 <div>Отступ, мм: </div>
                 <AInputNumber
                   :min="minOffset"
-                  :max="maxRadiusOffset"
+                  :max="maxDiamOffset"
                   size="small"
-                  v-model="radiusOffset"
+                  v-model="diamOffset"
                 />
               </div>
               <ASlider
                 :min="minOffset"
-                :max="maxRadiusOffset"
-                v-model="radiusOffset"
+                :max="maxDiamOffset"
+                v-model="diamOffset"
               />
             </div>
           </div>
@@ -371,18 +371,18 @@ export default class CanvasArea extends Vue {
   private isLinkTooltipVisible = false;
 
   private widthOffset = 0;
-  private heightOffset = 0;
-  private radiusOffset = 0;
+  private heightOffset = 50;
+  private diamOffset = 50;
 
   private linkOffsets = true;
 
   private areaType: AreaType = AreaType.CIRCLE;
 
-  private minRadius = 10;
-  private maxRadius = 100;
-  private radius = 18;
+  private minDiam = 15;
+  private maxDiam = 100;
+  private diam = 18;
 
-  private areaRadius = Math.min(this.maxWidth, this.maxHeight) / 4;
+  private areaDiam = Math.min(this.maxWidth, this.maxHeight) / 2;
 
   private width = this.maxWidth / 2;
   private height = this.maxHeight / 2;
@@ -393,7 +393,7 @@ export default class CanvasArea extends Vue {
   private minS = 1;
   private maxS = 100;
 
-  private p = 37;
+  private p = 120;
   private minP = 0;
   private maxP = 1000;
 
@@ -409,15 +409,15 @@ export default class CanvasArea extends Vue {
   }
 
   private get minWidth(): number {
-    return this.radius * 2 + 2;
+    return this.diam + 2;
   }
   private get maxWidthOffset(): number {
     return (this.width + 2) / 2;
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private get maxRadiusOffset(): number {
-    return this.areaRadius;
+  private get maxDiamOffset(): number {
+    return this.areaDiam;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -426,7 +426,7 @@ export default class CanvasArea extends Vue {
   }
 
   private get minHeight(): number {
-    return this.radius * 2 + 2;
+    return this.diam + 2;
   }
   private get maxHeightOffset(): number {
     return (this.height + 2) / 2;
@@ -434,19 +434,19 @@ export default class CanvasArea extends Vue {
 
   private get computedUpdate(): boolean {
     const {
-      radius,
+      diam,
       rectangleArea,
       circleArea,
-      areaRadius,
+      areaDiam,
       areaType,
       drawer,
       s,
       p,
-      maxRadius,
-      minRadius,
+      maxDiam,
+      minDiam,
     } = this;
-    noop(radius, rectangleArea, s, p, drawer, circleArea, areaRadius, areaType);
-    if (radius < minRadius || radius > maxRadius || !drawer) {
+    noop(diam, rectangleArea, s, p, drawer, circleArea, areaDiam, areaType);
+    if (diam < minDiam || diam > maxDiam || !drawer) {
       return false;
     }
     this.redraw();
@@ -455,20 +455,20 @@ export default class CanvasArea extends Vue {
 
   private redraw(): void {
     const {
-      radius,
+      diam,
       area,
       shell,
       drawer,
       fittedCentres,
       areaType,
-      radiusOffset,
+      diamOffset,
       widthOffset,
       areElementsFit,
       heightOffset,
     } = this;
     drawer.resetCanvas();
     const hasOffset = areaType === AreaType.CIRCLE
-      ? radiusOffset
+      ? diamOffset
       : widthOffset || heightOffset;
     const areaStrokeColor = !areElementsFit
       ? 'rgba(211, 33, 45, 0.5)'
@@ -489,7 +489,7 @@ export default class CanvasArea extends Vue {
       drawer.drawSizes(area, -Math.cos(45), 1);
     }
     fittedCentres.forEach(([x, y]) => {
-      const circle = { x, y, r: radius };
+      const circle = { x, y, r: diam / 2 };
       drawer.draw(
         circle,
         {
@@ -523,14 +523,14 @@ export default class CanvasArea extends Vue {
 
   private get fittedCentres(): Coordinate[] {
     const {
-      radius,
+      diam,
       rectangleArea,
       circleArea,
       totalElementCount,
     } = this;
     return this.areaType === AreaType.RECTANGLE
-      ? getFittedCentresRightLine(rectangleArea, radius, totalElementCount)
-      : getFittedCentresSpiral(circleArea, radius, totalElementCount);
+      ? getFittedCentresRightLine(rectangleArea, diam / 2, totalElementCount)
+      : getFittedCentresSpiral(circleArea, diam / 2, totalElementCount);
   }
 
   private get rectangleArea(): RectangleArea {
@@ -570,12 +570,12 @@ export default class CanvasArea extends Vue {
 
   private get circleArea(): CircleArea {
     const [x, y] = WORKSPACE_CENTER;
-    return new CircleArea(x, y, this.areaRadius - this.radiusOffset);
+    return new CircleArea(x, y, this.areaDiam / 2 - this.diamOffset / 2);
   }
 
   private get circleShell(): CircleArea {
     const [x, y] = WORKSPACE_CENTER;
-    return new CircleArea(x, y, this.areaRadius);
+    return new CircleArea(x, y, this.areaDiam / 2);
   }
 
   private mounted(): void {
