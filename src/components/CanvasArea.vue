@@ -393,7 +393,7 @@ export default class CanvasArea extends Vue {
   private minS = 1;
   private maxS = 100;
 
-  private p = 120;
+  private p = 85;
   private minP = 0;
   private maxP = 1000;
 
@@ -417,7 +417,7 @@ export default class CanvasArea extends Vue {
 
   // eslint-disable-next-line class-methods-use-this
   private get maxDiamOffset(): number {
-    return this.areaDiam;
+    return this.areaDiam / 2;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -570,7 +570,7 @@ export default class CanvasArea extends Vue {
 
   private get circleArea(): CircleArea {
     const [x, y] = WORKSPACE_CENTER;
-    return new CircleArea(x, y, this.areaDiam / 2 - this.diamOffset / 2);
+    return new CircleArea(x, y, this.areaDiam / 2 - this.diamOffset);
   }
 
   private get circleShell(): CircleArea {

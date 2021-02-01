@@ -124,7 +124,7 @@ export class Drawer {
     ctx.lineTo(endX + 50 * multiplier, endY);
     ctx.strokeStyle = 'grey';
     ctx.stroke();
-    this.drawText(r, endX + 20 * multiplier, endY - 5);
+    this.drawText(r * 2, endX + 20 * multiplier, endY - 5);
   }
 
   private drawRectangleSizes = (
