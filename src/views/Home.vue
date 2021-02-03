@@ -1,5 +1,5 @@
-<template style="display: flex; justify-content: center;">
-  <div style="display: flex; justify-content: center;">
+<template>
+  <div style="display: flex;">
     <div style="display: flex; flex-direction: column; align-items: center">
       <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
         <div style="margin-left: 1rem; color: #0a63ae; font-size: 1.8rem">

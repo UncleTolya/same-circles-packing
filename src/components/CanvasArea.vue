@@ -8,7 +8,7 @@
         justify-content: flex-start;
         padding: 1rem;
         font-size: .9rem;
-      ">
+      " :style="{ height: CANVAS_HEIGHT }">
         <div style="
           display: flex;
           flex-direction: column;
@@ -301,6 +301,13 @@
               />
             </div>
           </div>
+          <div style="display: flex; justify-content: space-between">
+            Отображать размер отступа:
+            <ACheckbox
+              :checked="drawOffset"
+              @change="({ target }) => drawOffset = target.checked"
+            ></ACheckbox>
+          </div>
         </div>
       </div>
       <canvas id="canvas" :width="CANVAS_WIDTH" :height="CANVAS_HEIGHT"></canvas>
@@ -375,6 +382,7 @@ export default class CanvasArea extends Vue {
   private diamOffset = 50;
 
   private linkOffsets = true;
+  private drawOffset = false;
 
   private areaType: AreaType = AreaType.CIRCLE;
 
@@ -465,6 +473,7 @@ export default class CanvasArea extends Vue {
       widthOffset,
       areElementsFit,
       heightOffset,
+      drawOffset,
     } = this;
     drawer.resetCanvas();
     const hasOffset = areaType === AreaType.CIRCLE
@@ -486,7 +495,9 @@ export default class CanvasArea extends Vue {
         thickness: undefined,
         index: 1,
       });
-      drawer.drawSizes(area, -Math.cos(45), 1);
+      if (drawOffset) {
+        drawer.drawSizes(area, -Math.cos(45), 1);
+      }
     }
     fittedCentres.forEach(([x, y]) => {
       const circle = { x, y, r: diam / 2 };
