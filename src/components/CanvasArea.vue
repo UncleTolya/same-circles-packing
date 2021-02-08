@@ -2,7 +2,7 @@
   <div>
     <div style="width: 100%; display: flex; padding: 1rem; align-items: flex-start;">
       <div style="
-        width: 300px;
+        width: 20rem;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
@@ -15,7 +15,7 @@
           justify-content: space-between;
           margin-bottom: 3rem;
         ">
-          <div style="display: flex; flex-direction: column; position: relative;">
+          <div style="display: flex; flex-direction: column; position: relative; margin-bottom: 1rem;">
             <div style="display: flex; justify-content: space-between">
               <div>Диаметр элемента, мм: </div>
               <AInputNumber
@@ -26,13 +26,13 @@
               />
             </div>
             <ASlider
+              v-show="showSliders"
+              v-model="diam"
               :min="minDiam"
               :max="maxDiam"
-              v-model="diam"
             />
-
           </div>
-          <div style="display: flex; flex-direction: column; position: relative;">
+          <div style="display: flex; flex-direction: column; position: relative; margin-bottom: 1rem;">
             <div style="position: absolute; top: 0; left: -1.5rem">
               <ATooltip placement="topLeft" v-model="isSTooltipVisible">
                 <template #title>
@@ -51,12 +51,13 @@
               />
             </div>
             <ASlider
+              v-show="showSliders"
+              v-model="s"
               :min="minS"
               :max="maxS"
-              v-model="s"
             />
           </div>
-          <div style="display: flex; flex-direction: column; position: relative;">
+          <div style="display: flex; flex-direction: column; position: relative; margin-bottom: 1rem;">
             <div style="position: absolute; top: 0; left: -1.5rem">
               <ATooltip placement="topLeft" v-model="isPTooltipVisible">
                 <template #title>
@@ -76,9 +77,10 @@
                 />
               </div>
               <ASlider
+                v-show="showSliders"
+                v-model="p"
                 :min="minP"
                 :max="maxP"
-                v-model="p"
               />
             </div>
           </div>
@@ -95,7 +97,7 @@
               </div>
           </div>
           </div>
-          <div style="display: flex; flex-direction: column; position: relative;">
+          <div style="display: flex; flex-direction: column; position: relative; margin-bottom: 1rem;">
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
                 <div>Вес элемента, г: </div>
@@ -107,9 +109,10 @@
                 />
               </div>
               <ASlider
+                v-model="w"
+                v-show="showSliders"
                 :min="minW"
                 :max="maxW"
-                v-model="w"
               />
             </div>
           </div>
@@ -121,8 +124,9 @@
           display: flex;
           flex-direction: column;
           justify-content: space-between;
+          margin-bottom: 1rem;
         ">
-          <div style="position: relative;">
+          <div style="position: relative; margin-bottom: .5rem;">
             <div style="position: absolute; top: 0; left: -1.5rem">
               <ATooltip placement="topLeft" v-model="isFormTooltipVisible">
                 <template #title>
@@ -159,7 +163,7 @@
           </div>
           <div
             v-if="areaType === AreaType.CIRCLE"
-            style="display: flex; flex-direction: column"
+            style="display: flex; flex-direction: column; margin-bottom: 1rem;"
           >
             <div style="display: flex; justify-content: space-between">
               <div>Диаметр, мм: </div>
@@ -171,14 +175,15 @@
               />
             </div>
             <ASlider
+              v-model="areaDiam"
+              v-show="showSliders"
               :min="diam"
               :max="Math.floor(maxHeight - 2)"
-              v-model="areaDiam"
             />
           </div>
           <div
             v-if="areaType === AreaType.RECTANGLE"
-            style="display: flex; flex-direction: column"
+            style="display: flex; flex-direction: column; margin-bottom: 1rem;"
           >
             <div style="display: flex; justify-content: space-between">
               <div>Ширина, мм: </div>
@@ -190,14 +195,15 @@
               />
             </div>
             <ASlider
+              v-show="showSliders"
+              v-model="width"
               :min="minWidth"
               :max="maxWidth"
-              v-model="width"
             />
           </div>
           <div
             v-if="areaType === AreaType.RECTANGLE"
-            style="display: flex; flex-direction: column"
+            style="display: flex; flex-direction: column; margin-bottom: 1rem;"
           >
             <div style="display: flex; justify-content: space-between">
               <div>Высота, мм: </div>
@@ -209,14 +215,15 @@
               />
             </div>
             <ASlider
+              v-show="showSliders"
+              v-model="height"
               :min="minHeight"
               :max="maxHeight"
-              v-model="height"
             />
           </div>
           <div
             v-if="areaType === AreaType.CIRCLE"
-            style="display: flex; flex-direction: column"
+            style="display: flex; flex-direction: column; margin-bottom: 1rem;"
           >
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
@@ -229,15 +236,16 @@
                 />
               </div>
               <ASlider
+                v-show="showSliders"
+                v-model="diamOffset"
                 :min="minOffset"
                 :max="maxDiamOffset"
-                v-model="diamOffset"
               />
             </div>
           </div>
           <div
             v-if="areaType === AreaType.RECTANGLE"
-            style="display: flex; flex-direction: column"
+            style="display: flex; flex-direction: column;"
           >
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
@@ -250,19 +258,20 @@
                 />
               </div>
               <ASlider
+                v-show="showSliders"
+                v-model="heightOffset"
                 :min="minOffset"
                 :max="maxHeightOffset"
-                v-model="heightOffset"
               />
             </div>
           </div>
-          <div v-if="areaType === AreaType.RECTANGLE" style="display: flex; justify-content: center">
+          <div v-if="areaType === AreaType.RECTANGLE" style="display: flex; justify-content: center;">
             <div style="margin-right: .5rem">
               <ATooltip placement="topLeft" v-model="isLinkTooltipVisible">
                 <template #title>
                   <span>Синхронизировать размер отступов</span>
                 </template>
-                <AIcon type="question-circle"/>
+                <AIcon type="link"/>
               </ATooltip>
             </div>
             <ACheckbox
@@ -272,7 +281,7 @@
           </div>
           <div
             v-if="areaType === AreaType.RECTANGLE"
-            style="display: flex; flex-direction: column"
+            style="display: flex; flex-direction: column; margin-bottom: 1rem;"
           >
             <div style="display: flex; flex-direction: column">
               <div style="display: flex; justify-content: space-between">
@@ -294,20 +303,48 @@
                 />
               </div>
               <ASlider
-                v-show="!linkOffsets"
+                v-show="!linkOffsets && showSliders"
+                v-model="widthOffset"
                 :min="minOffset"
                 :max="maxWidthOffset"
-                v-model="widthOffset"
               />
             </div>
           </div>
-          <div style="display: flex; justify-content: space-between">
-            Отображать размер отступа:
-            <ACheckbox
-              :checked="drawOffset"
-              @change="({ target }) => drawOffset = target.checked"
-            ></ACheckbox>
-          </div>
+        </div>
+        <div style="align-self: start">
+          <APopover placement="right">
+            <template #content>
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                  margin-bottom: 1rem;
+                "
+              >
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                  Отображать размер отступа:
+                  <ACheckbox
+                    :checked="drawOffset"
+                    @change="({ target }) => drawOffset = target.checked"
+                  ></ACheckbox>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  Показывать ползунки:
+                  <ACheckbox
+                    :checked="showSliders"
+                    @change="({ target }) => showSliders = target.checked"
+                  ></ACheckbox>
+                </div>
+              </div>
+            </template>
+            <AButton
+              size="small"
+              type="dashed"
+              icon="setting"
+            ></AButton>
+          </APopover>
+
         </div>
       </div>
       <canvas id="canvas" :width="CANVAS_WIDTH" :height="CANVAS_HEIGHT"></canvas>
@@ -336,7 +373,7 @@ import {
   Radio,
   Icon,
   Tooltip,
-  Checkbox,
+  Checkbox, Popover, Button,
 } from 'ant-design-vue';
 import Vue from 'vue';
 import 'ant-design-vue/dist/antd.css';
@@ -356,6 +393,8 @@ enum AreaType {
     [InputNumber.name]: InputNumber,
     [Slider.name]: Slider,
     [Icon.name]: Icon,
+    [Popover.name]: Popover,
+    [Button.name]: Button,
     [Radio.Button.name]: Radio.Button,
     [Radio.Group.name]: Radio.Group,
     [Checkbox.name]: Checkbox,
@@ -372,6 +411,7 @@ enum AreaType {
   },
 })
 export default class CanvasArea extends Vue {
+  private showSliders = false;
   private isSTooltipVisible = false;
   private isPTooltipVisible = false;
   private isFormTooltipVisible = false;
