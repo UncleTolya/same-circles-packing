@@ -100,3 +100,44 @@ export const getFittedCentresRightLine = (
   }
   return fittedCentres;
 };
+
+export const getFittedCentresBoxGrid = (
+  area: Area,
+  circleRadius: number,
+  maximum = 10000,
+): Coordinate[] => {
+  let firstCenter;
+  try {
+    firstCenter = area.findFirstCircleCenter(circleRadius);
+  } catch {
+    return [];
+  }
+  const fittedCentres: Coordinate[] = [firstCenter];
+
+  const getR = ([x, y]: Coordinate): Coordinate => [x + 2 * circleRadius, y];
+  const getD = ([x, y]: Coordinate): Coordinate => [x, y + circleRadius * 2];
+
+  let lineStarter = firstCenter;
+  const queue: Coordinate[] = [getR(firstCenter)];
+  while (queue.length && (maximum === 0 || fittedCentres.length <= maximum - 1)) {
+    const center = queue.shift();
+    if (!center) {
+      break;
+    }
+    const circle = { x: center[0], y: center[1], r: circleRadius };
+    if (area.isCircleFit(circle)) {
+      fittedCentres.push(center);
+      queue.push(getR([center[0], center[1]]));
+    } else {
+      const d = getD([lineStarter[0], lineStarter[1]]);
+      if (d && area.isCircleFit({ x: d[0], y: d[1], r: circleRadius })) {
+        lineStarter = d;
+        fittedCentres.push(d);
+        queue.push(getR(d));
+      } else {
+        break;
+      }
+    }
+  }
+  return fittedCentres;
+};

@@ -185,6 +185,18 @@
             v-if="areaType === AreaType.RECTANGLE"
             style="display: flex; flex-direction: column; margin-bottom: 1rem;"
           >
+            <div style="display: flex; justify-content: space-between;">
+              Квадратная решётка:
+              <ACheckbox
+                :checked="boxGrid"
+                @change="({ target }) => boxGrid = target.checked"
+              ></ACheckbox>
+            </div>
+          </div>
+          <div
+            v-if="areaType === AreaType.RECTANGLE"
+            style="display: flex; flex-direction: column; margin-bottom: 1rem;"
+          >
             <div style="display: flex; justify-content: space-between">
               <div>Ширина, мм: </div>
               <AInputNumber
@@ -344,7 +356,6 @@
               icon="setting"
             ></AButton>
           </APopover>
-
         </div>
       </div>
       <canvas id="canvas" :width="CANVAS_WIDTH" :height="CANVAS_HEIGHT"></canvas>
@@ -362,9 +373,15 @@ import {
   Coordinate,
   Drawer,
   WORKSPACE_WIDTH,
-  WORKSPACE_HEIGHT, WORKSPACE_CENTER,
+  WORKSPACE_HEIGHT,
+  WORKSPACE_CENTER,
 } from '@/components/Drawer/Drawer';
-import { getFittedCentresRightLine, getFittedCentresSpiral, noop } from '@/components/utils';
+import {
+  getFittedCentresRightLine,
+  getFittedCentresSpiral,
+  getFittedCentresBoxGrid,
+  noop,
+} from '@/components/utils';
 import { Component } from 'vue-property-decorator';
 import {
   InputNumber,
@@ -412,6 +429,9 @@ enum AreaType {
 })
 export default class CanvasArea extends Vue {
   private showSliders = false;
+
+  private boxGrid = false;
+
   private isSTooltipVisible = false;
   private isPTooltipVisible = false;
   private isFormTooltipVisible = false;
@@ -578,10 +598,15 @@ export default class CanvasArea extends Vue {
       rectangleArea,
       circleArea,
       totalElementCount,
+      areaType,
+      boxGrid,
     } = this;
-    return this.areaType === AreaType.RECTANGLE
-      ? getFittedCentresRightLine(rectangleArea, diam / 2, totalElementCount)
-      : getFittedCentresSpiral(circleArea, diam / 2, totalElementCount);
+    if (areaType === AreaType.CIRCLE) {
+      return getFittedCentresSpiral(circleArea, diam / 2, totalElementCount);
+    }
+    return boxGrid
+      ? getFittedCentresBoxGrid(rectangleArea, diam / 2, totalElementCount)
+      : getFittedCentresRightLine(rectangleArea, diam / 2, totalElementCount);
   }
 
   private get rectangleArea(): RectangleArea {
