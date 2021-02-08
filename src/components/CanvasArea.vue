@@ -1,5 +1,13 @@
 <template>
-  <div>
+  <div style="display: flex; flex-direction: column">
+    <div style="width: 100%">
+      <AInput
+        v-model="title"
+        placeholder="Новый проект"
+        style="width: 90%; font-weight: 700; font-size: 2rem; border: none"
+        size="large"
+      ></AInput>
+    </div>
     <div style="width: 100%; display: flex; padding: 1rem; align-items: flex-start;">
       <div style="
         width: 20rem;
@@ -85,14 +93,14 @@
             </div>
           </div>
           <div style="margin-bottom: 1rem">
-            <div v-if="areElementsFit">
+            <div v-if="areElementsFit" style="font-weight: 600">
               Помещается: {{ fittedCentres.length }} элементов
             </div>
             <div v-else style="color: #df676f; display: flex; flex-direction: column">
-              <div>
+              <div style="font-weight: 700">
                 Помещается:
               </div>
-              <div>
+              <div style="font-weight: 700">
                 {{ fittedCentres.length }} элементов из {{ totalElementCount }}
               </div>
           </div>
@@ -116,7 +124,7 @@
               />
             </div>
           </div>
-          <div>
+          <div style="font-weight: 700">
             Итоговый вес элементов: {{ fittedCentres.length * w }} г
           </div>
         </div>
@@ -385,6 +393,7 @@ import {
 import { Component } from 'vue-property-decorator';
 import {
   InputNumber,
+  Input,
   Slider,
   Dropdown,
   Radio,
@@ -407,6 +416,7 @@ enum AreaType {
 @Component({
   components: {
     [Dropdown.name]: Dropdown,
+    [Input.name]: Input,
     [InputNumber.name]: InputNumber,
     [Slider.name]: Slider,
     [Icon.name]: Icon,
@@ -428,6 +438,8 @@ enum AreaType {
   },
 })
 export default class CanvasArea extends Vue {
+  private title = '';
+
   private showSliders = false;
 
   private boxGrid = false;
@@ -666,7 +678,7 @@ export default class CanvasArea extends Vue {
 }
 </script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;600;700&display=swap');
   .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
     background-color: rgb(10, 99, 174);
     border-color: rgb(10, 99, 174);

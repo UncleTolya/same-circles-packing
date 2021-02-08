@@ -1,5 +1,5 @@
 <template>
-  <div id="app" style="font-family: 'Comfortaa', cursive;">
+  <div id="app" style="font-family: 'Comfortaa', cursive; font-weight: 500">
     <router-view/>
   </div>
 </template>
