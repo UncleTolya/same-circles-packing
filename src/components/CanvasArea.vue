@@ -3,7 +3,7 @@
     <div style="width: 100%">
       <AInput
         v-model="title"
-        placeholder="Новый проект"
+        placeholder="Без названия"
         style="width: 90%; font-weight: 700; font-size: 2rem; border: none"
         size="large"
       ></AInput>
@@ -93,7 +93,7 @@
             </div>
           </div>
           <div style="margin-bottom: 1rem">
-            <div v-if="areElementsFit" style="font-weight: 600">
+            <div v-if="areElementsFit" style="font-weight: 700">
               Помещается: {{ fittedCentres.length }} элементов
             </div>
             <div v-else style="color: #df676f; display: flex; flex-direction: column">
