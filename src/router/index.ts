@@ -39,10 +39,10 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   await store.dispatch('login');
 
-  const { requiresAuth } = to.meta;
-  if (requiresAuth && !store.state.isLoggedIn) {
-    return next({ name: 'Login' });
-  }
+  // const { requiresAuth } = to.meta;
+  // if (requiresAuth && !store.state.isLoggedIn) {
+  //   return next({ name: 'Login' });
+  // }
   next();
 });
 
