@@ -22,10 +22,6 @@
       "./src/main/webapp/app/@types"
     ],
     "baseUrl": ".",
-    "types": [
-      "node",
-      "webpack-env"
-    ],
     "paths": {
       "@/*": [
         "src/*"
