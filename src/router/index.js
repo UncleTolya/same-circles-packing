@@ -7,7 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { store } from '@/store';
 import Register from '@/views/Register.vue';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
@@ -42,11 +41,12 @@ const router = new VueRouter({
     routes,
 });
 router.beforeEach((to, from, next) => __awaiter(void 0, void 0, void 0, function* () {
-    yield store.dispatch('login');
-    const { requiresAuth } = to.meta;
-    if (requiresAuth && !store.state.isLoggedIn) {
-        return next({ name: 'Login' });
-    }
+    // await store.dispatch('login');
+    //
+    // const { requiresAuth } = to.meta;
+    // if (requiresAuth && !store.state.isLoggedIn) {
+    //   return next({ name: 'Login' });
+    // }
     next();
 }));
 export default router;

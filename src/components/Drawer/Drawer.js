@@ -1,8 +1,8 @@
 import { Area } from '@/components/Area/Area';
 import { CircleArea } from '@/components/Area/CircleArea';
 import { RectangleArea } from '@/components/Area/RectangleArea';
-export const CANVAS_WIDTH = 1200;
-export const CANVAS_HEIGHT = 800;
+export const CANVAS_WIDTH = 1000;
+export const CANVAS_HEIGHT = 600;
 export const RULER_WIDTH = 30;
 export const WORKSPACE_WIDTH = CANVAS_WIDTH - RULER_WIDTH;
 export const WORKSPACE_HEIGHT = CANVAS_HEIGHT - RULER_WIDTH;
@@ -28,7 +28,7 @@ export class Drawer {
             ctx.lineTo(endX + 50 * multiplier, endY);
             ctx.strokeStyle = 'grey';
             ctx.stroke();
-            this.drawText(r, endX + 20 * multiplier, endY - 5);
+            this.drawText(r * 2, endX + 20 * multiplier, endY - 5);
         };
         this.drawRectangleSizes = (points, index = 0) => {
             this.drawRectangleSizesTop(points, index);
@@ -128,7 +128,7 @@ export class Drawer {
         ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }
     drawElement(element, options) {
-        const opt = Object.assign({ fillColor: 'green', strokeColor: 'grey' }, options !== null && options !== void 0 ? options : {});
+        const opt = Object.assign({ fillColor: '#0a63ae', strokeColor: 'grey' }, options !== null && options !== void 0 ? options : {});
         if (element.points) {
             this.drawRectangle(element.points, opt);
         }
