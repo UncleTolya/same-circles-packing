@@ -40,7 +40,7 @@ import Vue from 'vue';
   data() {
     return {
       store,
-      logo: require('@/assets/logo.png'),
+      logo: require('@/assets/uno.png'),
     };
   },
 })
@@ -50,13 +50,6 @@ export default class Login extends Vue {
   private password = '';
 
   private async handleSubmit(): Promise<void> {
-    await store.dispatch('login', {
-      name: this.name,
-      password: this.password,
-    });
-    if (store.state.isLoggedIn) {
-      await this.$router.push('/');
-    }
   }
 }
 </script>

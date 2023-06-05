@@ -373,8 +373,8 @@
 </template>
 
 <script lang="ts">
-import { CircleArea } from '@/components/Area/CircleArea';
-import { RectangleArea } from '@/components/Area/RectangleArea';
+import { CircleArea } from '../components/Area/CircleArea';
+import { RectangleArea } from '../components/Area/RectangleArea';
 import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
@@ -383,13 +383,13 @@ import {
   WORKSPACE_WIDTH,
   WORKSPACE_HEIGHT,
   WORKSPACE_CENTER,
-} from '@/components/Drawer/Drawer';
+} from '../components/Drawer/Drawer';
 import {
   getFittedCentresRightLine,
   getFittedCentresSpiral,
   getFittedCentresBoxGrid,
   noop,
-} from '@/components/utils';
+} from '../components/utils';
 import { Component } from 'vue-property-decorator';
 import {
   InputNumber,
@@ -403,7 +403,7 @@ import {
 } from 'ant-design-vue';
 import Vue from 'vue';
 import 'ant-design-vue/dist/antd.css';
-import { Area } from '@/components/Area/Area';
+import { Area } from '../components/Area/Area';
 
 // TODO сделать начало отсчета от левого края самой длинный стороны многоугольника
 // TODO и не корень из трех а динамический угол

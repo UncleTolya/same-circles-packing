@@ -1,24 +1,14 @@
-# same-circle-packing
+Run battery
 
-## Project setup
-```
-npm install
-```
+docker build . -t cr.yandex/crpbo2pe37vojj7u86hg/battery
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+docker push cr.yandex/crpbo2pe37vojj7u86hg/battery
 
-### Compiles and minifies for production
-```
-npm run build
-```
+ssh -i ~/.ssh/id_egor_yc admin@62.84.122.212
 
-### Lints and fixes files
-```
-npm run lint
-```
+sudo docker pull cr.yandex/crpbo2pe37vojj7u86hg/battery
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+sudo docker stop battery2 && sudo docker rm battery2us
+
+sudo docker run --name battery -p 8080:8080 -p 8100:8100 -d cr.yandex/crpbo2pe37vojj7u86hg/battery
+

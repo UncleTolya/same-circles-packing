@@ -6,7 +6,7 @@
           Конфигуратор Li-Ion АКБ
         </div>
         <div style="display: flex; flex-direction: row-reverse">
-          <img alt="radio-technika.ru" :src="logo" style="height: 8rem">
+          <img alt="uno-soft.ru" :src="logo" style="height: 8rem; padding: 1rem;">
         </div>
       </div>
       <CanvasArea/>
@@ -24,8 +24,10 @@ export default {
     CanvasArea,
   },
   data() {
+    const uno = require('@/assets/uno.png');
+    const radioteh = require('@/assets/radioteh.png');
     return {
-      logo: require('@/assets/logo.png'),
+      logo: window.location.port === '8080' ? uno : radioteh,
     };
   },
 };
